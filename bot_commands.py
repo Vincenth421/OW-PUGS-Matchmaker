@@ -1,6 +1,7 @@
 import numpy as np
 
-playerData = {"Player1": {"tankSR": 99, "suppSR": 0, "dpsSR": 0, "ready": True}}
+playerData = {}
+    # "Player1": {"tankSR": 99, "suppSR": 0, "dpsSR": 0, "ready": True}}
 
 # [tankSR, dpsSR, suppSR, ready]
 # build 2 teams of 6 
@@ -35,14 +36,22 @@ userData = mystr.split()
 #good work gang
 def updatePlayerData(mystr, PlayerID):
     userData = mystr.split()
+    if PlayerID not in playerData:
+        playerData[PlayerID] = {}
     if(userData[0] == "!support"):
-        playerData[PlayerID]["suppSR"] = userData[1]
-    elif(userData[0] == "!damage"):
+        playerData[PlayerID]["supportSR"] = userData[1]
+    elif(userData[0] == "!damage" or userData[0] == "!dps"):
         playerData[PlayerID]["dpsSR"] = userData[1]
     elif(userData[0] == "!tank"):
         playerData[PlayerID]["tankSR"] = userData[1]
     elif(userData[0] == "!ready"):
     	playerData[PlayerID]["ready"] = not playerData[PlayerID]["ready"]
+    print(playerData)
+
+def getPlayerData(PlayerID):
+    # I'd like for this to return a nice and cleanly formatted string with
+    # the player data
+    return playerData[PlayerID]
         
         
         
