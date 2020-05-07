@@ -19,7 +19,6 @@ playerData = {"Player1": {"tankSR": 99, "suppSR": 0, "dpsSR": 0, "ready": True}}
 
 
 #print(playerData["Player1"]["ready"])
-+
 # "!support 1000"
 #def commandParse(string):
 #    if(string)
@@ -28,7 +27,7 @@ playerData = {"Player1": {"tankSR": 99, "suppSR": 0, "dpsSR": 0, "ready": True}}
 mystr = "!support 1000"
 
 userData = mystr.split()
-print(userData)
+# print(userData)
 
 
 
@@ -42,7 +41,7 @@ def updatePlayerData(mystr, PlayerID):
         playerData[PlayerID]["dpsSR"] = userData[1]
     elif(userData[0] == "!tank"):
         playerData[PlayerID]["tankSR"] = userData[1]
-    elif(userData[0] == "!ready")
+    elif(userData[0] == "!ready"):
     	playerData[PlayerID]["ready"] = not playerData[PlayerID]["ready"]
         
         
@@ -76,31 +75,31 @@ def split(allPlayerData):
 # as even SR spread as possible
 # Assume that role is a list of length 4
 def matchmake(role):
-  totalsr = 0
-  for i in range(len(role)):
-    totalsr += role[i][1]
+    totalsr = 0
+    for i in range(len(role)):
+        totalsr += role[i][1]
 
-  bestPair = []
-  average2 = 0
-  bestDifference = 5000
+    bestPair = []
+    average2 = 0
+    bestDifference = 5000
   
-  for i in range(len(role)):
-    for j in range(i, len(role))
-      avg1 = (role[i][1] + role[j][1]) / 2
-      avg2 = (totalsr - role[i][1] - role[j][1]) / 2
-      difference = avg1 - avg2
-  	  if abs(difference) < abs(bestDifference):
-        average2 = avg2
-        bestDifference = difference
-        bestPair = [avg1, role[i][0], role[j][0]]
+    for i in range(len(role)):
+        for j in range(i, len(role)):
+            avg1 = (role[i][1] + role[j][1]) / 2
+            avg2 = (totalsr - role[i][1] - role[j][1]) / 2
+            difference = avg1 - avg2
+            if abs(difference) < abs(bestDifference):
+                average2 = avg2
+                bestDifference = difference
+                bestPair = [avg1, role[i][0], role[j][0]]
   
-  otherPair = [average2]
-  for i in range(len(role)):
-  	if ~(role[i][0] in bestPair):
-      otherPair.append(role[i][0])
+    otherPair = [average2]
+    for i in range(len(role)):
+        if ~(role[i][0] in bestPair):
+            otherPair.append(role[i][0])
   
-  both = [bestPair, otherPairPair]
-  return both
+    both = [bestPair, otherPairPair]
+    return both
 
 # list.insert(0, thing-to-insert)
 # to prepend things to a list ^^^
@@ -109,65 +108,65 @@ def matchmake(role):
 # average sr is first element in both team A and team B
 # good work team
 def combine(tank, dps, supp):
-  dReverse = False
-  sReverse = False
-  tankDiff = tank[0][0] - tank[1][0]
-  dpsDiff = dps[0][0] - dps[1][0]
-  suppDiff = supp[0][0] - supp[1][0]
-  average1 = tank[0][0]
-  average2 = tank[1][0]
-  A = [tank[0][1], tank[0][2]]
-  B = [tank[1][1], tank[1][2]]
+    dReverse = False
+    sReverse = False
+    tankDiff = tank[0][0] - tank[1][0]
+    dpsDiff = dps[0][0] - dps[1][0]
+    suppDiff = supp[0][0] - supp[1][0]
+    average1 = tank[0][0]
+    average2 = tank[1][0]
+    A = [tank[0][1], tank[0][2]]
+    B = [tank[1][1], tank[1][2]]
   
-  # brute force calculation of combined sr average
-  bestDiff = tankDiff + dpsDiff + suppDiff
-  if abs(tankDiff - dpsDiff + suppDiff) < abs(bestDiff):
-    bestDiff = tankDiff - dpsDiff + suppDiff
-    dReverse = True
-  if abs(tankDiff + dpsDiff - suppDiff) < abs(bestDiff):
-    bestDiff = tankDiff + dpsDiff - suppDiff
-    sReverse = True
-  if abs(tankDiff - dpsDiff - suppDiff) < abs(bestDiff):
-    bestDiff = tankDiff - dpsDiff - suppDiff
-    dReverse = True
-    sReverse = True
+    # brute force calculation of combined sr average
+    bestDiff = tankDiff + dpsDiff + suppDiff
+    if abs(tankDiff - dpsDiff + suppDiff) < abs(bestDiff):
+        bestDiff = tankDiff - dpsDiff + suppDiff
+        dReverse = True
+    if abs(tankDiff + dpsDiff - suppDiff) < abs(bestDiff):
+        bestDiff = tankDiff + dpsDiff - suppDiff
+        sReverse = True
+    if abs(tankDiff - dpsDiff - suppDiff) < abs(bestDiff):
+        bestDiff = tankDiff - dpsDiff - suppDiff
+        dReverse = True
+        sReverse = True
     
-  # add to team A or B depending on above calculations
-  if dReverse:
-    A.append(dps[1][1])
-    A.append(dps[1][2])
-    B.append(dps[0][1])
-    B.append(dps[0][2])
-    average1 += dps[1][0]
-    average2 += dps[0][0]
-  else:
-    A.append(dps[0][1])
-    A.append(dps[0][2])
-    B.append(dps[1][1])
-    B.append(dps[1][2])
-    average1 += dps[0][0]
-    average2 += dps[1][0]
+    # add to team A or B depending on above calculations
+    if dReverse:
+        A.append(dps[1][1])
+        A.append(dps[1][2])
+        B.append(dps[0][1])
+        B.append(dps[0][2])
+        average1 += dps[1][0]
+        average2 += dps[0][0]
+    else:
+        A.append(dps[0][1])
+        A.append(dps[0][2])
+        B.append(dps[1][1])
+        B.append(dps[1][2])
+        average1 += dps[0][0]
+        average2 += dps[1][0]
     
-  if sReverse:
-    A.append(supp[1][1])
-    A.append(supp[1][2])
-    B.append(supp[0][1])
-    B.append(supp[0][2])
-    average1 += supp[1][0]
-    average2 += supp[0][0]
-  else:
-    A.append(supp[0][1])
-    A.append(supp[0][2])
-    B.append(supp[1][1])
-    B.append(supp[1][2])
-    average1 += supp[0][0]
-    average2 += supp[1][0]
+    if sReverse:
+        A.append(supp[1][1])
+        A.append(supp[1][2])
+        B.append(supp[0][1])
+        B.append(supp[0][2])
+        average1 += supp[1][0]
+        average2 += supp[0][0]
+    else:
+        A.append(supp[0][1])
+        A.append(supp[0][2])
+        B.append(supp[1][1])
+        B.append(supp[1][2])
+        average1 += supp[0][0]
+        average2 += supp[1][0]
     
-  # cameron's code, if buggy blame him
-  A.insert(0, average1/3)
-  B.insert(0, average2/3)
+    # cameron's code, if buggy blame him
+    A.insert(0, average1/3)
+    B.insert(0, average2/3)
         
-  return [A, B]
+    return [A, B]
     
   
   

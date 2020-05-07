@@ -29,4 +29,4 @@ async def matchmake():
 
 
 
-client.run("NzA3NzI0OTUzMzUyNTM2MTU2.XrM-yg.Nf4Iwm_kyRuKujCOh1BBqcR8sOM")
+client.run("TOKEN")
