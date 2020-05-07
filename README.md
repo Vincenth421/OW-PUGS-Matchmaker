@@ -6,7 +6,7 @@ Basic Discord bot that creates balanced teams for Overwatch PUGS.
 
 
 
-# Main Contributers
+# Main Contributers:
 
 Timothy Wang
 
