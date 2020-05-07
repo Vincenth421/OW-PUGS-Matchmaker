@@ -1,7 +1,5 @@
 import numpy as np
-
-playerData = {}
-    # "Player1": {"tankSR": 99, "suppSR": 0, "dpsSR": 0, "ready": True}}
+import pickle
 
 # [tankSR, dpsSR, suppSR, ready]
 # build 2 teams of 6 
@@ -25,13 +23,26 @@ playerData = {}
 #    if(string)
 
 
-mystr = "!support 1000"
+# mystr = "!support 1000"
 
-userData = mystr.split()
+# userData = mystr.split()
 # print(userData)
 
+def saveTest():
+    a = playerData
+    savePlayerData()
+    loadPlayerData()
 
+def savePlayerData():
+    with open("data.pickle", "wb") as handle:
+        pickle.dump(playerData, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+def loadPlayerData():
+    with open('data.pickle', 'rb') as handle:
+        playerData = pickle.load(handle)
+    return playerData
+
+playerData = loadPlayerData()
 
 #good work gang
 def updatePlayerData(mystr, PlayerID):
@@ -47,6 +58,7 @@ def updatePlayerData(mystr, PlayerID):
     elif(userData[0] == "!ready"):
     	playerData[PlayerID]["ready"] = not playerData[PlayerID]["ready"]
     print(playerData)
+    savePlayerData()
 
 def getPlayerData(PlayerID):
     # I'd like for this to return a nice and cleanly formatted string with
