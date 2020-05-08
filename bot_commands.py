@@ -18,6 +18,14 @@ import random
 #P6	P9  */##
 # prefer 0 = no preference, 1 = mt, 2 = ot, 3 = dps, 4 = support
 
+mapList = ['Blizzard World', 'Busan', 'Dorado', 
+           'Eichenwalde', 'Hanamura', 'Havana', 
+           'Hollywood', 'Ilios', 'Junkertown', 
+           'King\'s Row', 'Lijiang Tower', 'Nepal',
+           'Numbani', 'Oasis', 'Rialto',
+           'Route 66', 'Temple of Anubis', 'Volskaya Industries',
+           'Watchpoint: Gibraltar']
+
 # main matchmaking function
 # chooses 12 players, splits into roles, matchmakes roles, and then combines them back together
 def matchmake(playerData):
@@ -184,6 +192,10 @@ def adjust(playerData, winner):
         playerData[i]['queue'] = 'none'
     
     return playerData
+
+def randomMap():
+    i = random.randint(0,18)
+    return mapList[i]
 
 def main():
     allPlayerData = {
