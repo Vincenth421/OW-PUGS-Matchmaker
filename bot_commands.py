@@ -21,6 +21,13 @@ import random
 # main matchmaking function
 # chooses 12 players, splits into roles, matchmakes roles, and then combines them back together
 def matchmake(playerData):
+    queued = 0
+    for i in playerData.keys():
+        if playerData[i][queue] != 'none':
+            queued += 1
+    if queued < 12:
+        return -1
+    
     roles = split(playerData)
     
     tank = roles[0]
@@ -158,6 +165,10 @@ def combine(playerData, tank, dps, supp):
 
     return [playerData, int(average1/3), int(average2/3)]
 
+# adjusts player sr based on winning team
+# no adjustments if tie
+# winner must be either 0, 1, or 2
+# playerData is a hashtable of all players
 def adjust(playerData, winner):
     if(winner == 0):
         return playerData
