@@ -161,9 +161,11 @@ def combine(tank, dps, supp):
     bestDiff = tankDiff + dpsDiff + suppDiff
     if abs(tankDiff - dpsDiff + suppDiff) < abs(bestDiff):
         bestDiff = tankDiff - dpsDiff + suppDiff
+        sReverse = False
         dReverse = True
     if abs(tankDiff + dpsDiff - suppDiff) < abs(bestDiff):
         bestDiff = tankDiff + dpsDiff - suppDiff
+        dReverse = False
         sReverse = True
     if abs(tankDiff - dpsDiff - suppDiff) < abs(bestDiff):
         bestDiff = tankDiff - dpsDiff - suppDiff
@@ -222,7 +224,6 @@ def main():
 'usr11':  {'dps': 1776, 'support': 1502, 'tank': 3808, 'queue': 'dps'},
 'usr12':  {'dps': 1776, 'support': 3902, 'tank': 2488, 'queue': 'dps'}
 }
-    
     print(matchmake(allPlayerData))
 
 main()
