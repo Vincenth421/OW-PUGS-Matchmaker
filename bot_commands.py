@@ -70,8 +70,7 @@ def getPlayerData(PlayerID):
 # main matchmaking function
 # chooses 12 players, splits into roles, matchmakes roles, and then combines them back together
 def matchmake(playerData):
-    selectedPlayers = select(playerData)
-    roles = split(selectedPlayers)
+    roles = split(playerData)
     
     tank = roles[0]
     dps = roles[1]
@@ -83,24 +82,9 @@ def matchmake(playerData):
     
     return combine(t, d, s)
 
-# selects 12 players from a pool of any number
-def select(playerData):
-    list = []
-    selected = {}
-    
-    for i in playerData.keys:
-        list.append(playerData[i])
-
-    for i in range(12):
-        num = random.randint(0, len(list)-1)
-        #TODO check for dupe random numbers
-        selected[list[num]] = playerData[list[num]].get()
-
-    return selected
-        
 # ready is a bool
-# playerData is a hash table of 12 people
-# splits all players into their chosen roles
+# playerData is a hash table of any number fo people
+# splits all players into their chosen roles, then selects 4 for each role
 def split(playerData):
   tank = []
   dps = []
@@ -108,14 +92,25 @@ def split(playerData):
   
   for name in playerData.keys: 
     if playerData[name]['ready']:
-      if playerData[name]['tankSR'] != -1:
-      	tank.append([name, playerData[name]['tankSR']])
-      if playerData[name]['dpsSR'] != -1:
-      	dps.append([name, playerData[name]['dpsSR']])
-      if playerData[name]['suppSR'] != -1:
-      	supp.append([name, playerData[name]['suppSR']])
+        #TODO: maybe need to change what the boolean is for not selecting a role?
+        if playerData[name]['tank'] != -1:
+            tank.append([name, playerData[name]['tank']])
+        if playerData[name]['dps'] != -1:
+      	    dps.append([name, playerData[name]['dps']])
+        if playerData[name]['support'] != -1:
+      	    supp.append([name, playerData[name]['support']])
   
-  return [tank, dps, supp]
+  return [select(tank), select(dps), select(supp)]
+
+# selects 4 players from a pool of any number
+# role comes in as a list, returns a list of the randomly selected players
+def select(role):
+    selected = []
+    for i in range(4):
+        num = random.randint(0, len(role)-1)
+        #TODO check for dupe random numbers
+        selected.append(role[num])
+    return selected
 
 # given a role hash table
 # add to the value bucket a new entry, Team A or B
@@ -123,13 +118,12 @@ def split(playerData):
 # as even SR spread as possible
 # Assume that role is a list of length 4
 def balance(role):
-    totalsr = 0
-    for i in range(len(role)):
-        totalsr += role[i][1]
-
     bestPair = []
     average2 = 0
     bestDifference = 5000
+    totalsr = 0
+    for i in range(len(role)):
+        totalsr += role[i][1]
   
     for i in range(len(role)):
         for j in range(i, len(role)):
