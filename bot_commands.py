@@ -92,7 +92,6 @@ def split(playerData):
   
   for name in playerData.keys: 
     role = playerData[name]['queue']:
-        #TODO: maybe need to change what the boolean is for not selecting a role?
         if role == 'tank':
             tank.append([name, playerData[name]['tank']])
         elif role == 'dps':
