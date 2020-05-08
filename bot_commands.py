@@ -23,7 +23,7 @@ import random
 def matchmake(playerData):
     queued = 0
     for i in playerData.keys():
-        if playerData[i][queue] != 'none':
+        if playerData[i]['queue'] != 'none':
             queued += 1
     if queued < 12:
         return -1
