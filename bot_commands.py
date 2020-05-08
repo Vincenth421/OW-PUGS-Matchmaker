@@ -146,7 +146,7 @@ def balance(role):
         if ~(role[i][0] in bestPair):
             otherPair.append(role[i][0])
   
-    both = [bestPair, otherPairPair]
+    both = [bestPair, otherPair]
     return both
 
 # list.insert(0, thing-to-insert)
