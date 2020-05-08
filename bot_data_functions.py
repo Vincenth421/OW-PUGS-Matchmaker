@@ -18,28 +18,31 @@ def loadPlayerData():
 playerData = loadPlayerData()
 for player in playerData:
     playerData[player]["queue"] = "none"
+    playerData[player]["team"] = "none"
 
 numQueued = {"tank":0, "damage":0, "support":0}
 
 
 def queueFor(role, PlayerID):
     deQueue(PlayerID)
-    playerData[PlayerID]["queue"] = role
-    
-    if role == "tank":
-        numQueued["tank"] += 1
-        return ("Queued for tank.\n")
-    elif role == "damage" or role == "dps":
-        numQueued["damage"] += 1
-        return ("Queued for dps.\n")
-    elif role == "support":
-        numQueued["support"] += 1
-        return ("Queued for support.\n")
-    elif role == "none":
-        deQueue(PlayerID)
-        return ("Left the queue.\n")
+    if role in playerData[PlayerID]:
+        playerData[PlayerID]["queue"] = role
+        if role == "tank":
+            numQueued["tank"] += 1
+            return ("Queued for tank.\n")
+        elif role == "damage" or role == "dps":
+            numQueued["damage"] += 1
+            return ("Queued for dps.\n")
+        elif role == "support":
+            numQueued["support"] += 1
+            return ("Queued for support.\n")
+        elif role == "none":
+            deQueue(PlayerID)
+            return ("Left the queue.\n")
+        else:
+            return("Invalid role.\n")
     else:
-        return("Invalid role.\n")
+        return("Please input your SR for that role!\n")
 
     
 
@@ -77,7 +80,6 @@ def deQueue(PlayerID):
     
 #good work gang
 def updatePlayerData(mystr, PlayerID):
-    playerData[player]["queue"] = "none"
     userData = mystr.split()
     if userData[1].isalpha():
         return False
@@ -92,6 +94,8 @@ def updatePlayerData(mystr, PlayerID):
         playerData[PlayerID]["dps"] = sr
     elif(userData[0] == "!tank"):
         playerData[PlayerID]["tank"] = sr
+    playerData[PlayerID]["queue"] = "none"
+    playerData[PlayerID]["team"] = "none"
     print(playerData)
     savePlayerData()
     return True

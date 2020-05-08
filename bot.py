@@ -1,7 +1,8 @@
 import discord
 import random
 from discord.ext import commands
-from bot_data_commands import *
+from bot_data_functions import *
+from bot_commands import *
 
 client = commands.Bot(command_prefix = "!")
 
