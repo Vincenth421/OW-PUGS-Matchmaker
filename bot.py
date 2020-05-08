@@ -15,17 +15,18 @@ async def on_ready():
         await channel.send("Bot Restarted.")
         # print(clearPlayerData())
 
-@client.event
-async def on_message(message):
-    channel = message.channel
-    mystr = message.content
-    sender = str(message.author)
-    await client.process_commands(message)
+##@client.event
+##async def on_message(message):
+##    channel = message.channel
+##    mystr = message.content
+##    sender = str(message.author)
+##    await client.process_commands(message)
 
 
 @client.command()
 async def mention(ctx):
         await ctx.send(ctx.message.author.mention)
+
 
 @client.command()
 async def commands(ctx):
@@ -34,9 +35,31 @@ async def commands(ctx):
         await ctx.send(cmds + "\n" + link)
 
         
+@client.command(aliases=["matchmake"])
+async def mm(ctx):
+        mylist = getAllPlayerData()
+        matchList = matchmake(mylist)
+        if matchList == -1:
+                await ctx.send("Not enough players queued.")
+        else:
+                await ctx.send(printTeams(matchList))
+        
+
 @client.command()
-async def matchmake(ctx):
-        await ctx.send("this doesn't work yet, you fool")
+async def win(ctx):
+        mylist = matchmakeData()
+        newData = adjust(mylist, ctx.message.content)
+
+
+@client.command(aliases=["testmatchmake"])
+async def testmm(ctx):
+        mylist = matchmakeData()
+        matchList = matchmake(mylist)
+        if matchList == -1:
+                await ctx.send("Not enough players queued.")
+        else:
+                await ctx.send(printTeams(matchList))
+        
 
 @client.command(aliases=["support", "tank", "damage", "dps"])
 async def update(ctx):
@@ -46,6 +69,7 @@ async def update(ctx):
                 await ctx.send("Added!")
         else:
                 await ctx.send("Please enter a valid integer.")
+
 
 @client.command(aliases=["q"])
 async def queue(ctx, role):
@@ -60,6 +84,20 @@ async def queue(ctx, role):
         if message == "Roles Needed:\n":
                 message = "All roles filled."
         await ctx.send(message)
+
+@client.command()
+async def roles(ctx):
+        message = "Roles Needed:\n"
+        if tankQueued() != 0:
+                message = message + (tankQueued() + " tanks.\n")
+        if dpsQueued() != 0:
+                message = message + (dpsQueued() + " dps.\n")
+        if suppQueued() != 0:
+                message = message + (suppQueued() + " supports.\n")
+        if message == "Roles Needed:\n":
+                message = "All roles filled."
+        await ctx.send(message)
+        
         
 @client.command()
 async def leave(ctx):
@@ -76,8 +114,9 @@ async def leave(ctx):
                 message = "All roles filled."
         await ctx.send(message)
 
-@client.command()
-async def sr(ctx):
+
+@client.command(aliases=["sr"])
+async def status(ctx):
         try:
                 sender = str(ctx.message.author)
                 sr = getPlayerData(sender)
@@ -85,8 +124,9 @@ async def sr(ctx):
         except:
                 await ctx.send("Error.")
 
-@client.command()
-async def allsr(ctx):
+
+@client.command(aliases=["allSR"])
+async def allStatus(ctx):
         sr = getAllPlayerData()
         await ctx.send(sr)
        
@@ -95,6 +135,7 @@ async def allsr(ctx):
 async def clear(ctx, amount=5):
         if amount > 0:
                 await ctx.channel.purge(limit=amount+1)
+
 
 @client.command(aliases=["coin"])
 async def flip(ctx):
@@ -105,4 +146,4 @@ async def flip(ctx):
                 await ctx.send("Tails!")
 
 
-client.run("token")
+client.run("TOKEN")

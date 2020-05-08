@@ -1,5 +1,6 @@
 import numpy as np
 import pickle
+import random
 
 
 def savePlayerData():
@@ -23,7 +24,7 @@ for player in playerData:
     playerData[player]["team"] = -1
 
 
-numQueued = {"tank":0, "damage":0, "support":0}
+numQueued = {"tank":0, "dps":0, "support":0}
 
 
 def queueFor(role, PlayerID):
@@ -38,7 +39,7 @@ def queueFor(role, PlayerID):
             numQueued["tank"] += 1
             return ("Queued for tank.\n")
         elif role == "damage" or role == "dps":
-            numQueued["damage"] += 1
+            numQueued["dps"] += 1
             return ("Queued for dps.\n")
         elif role == "support":
             numQueued["support"] += 1
@@ -75,8 +76,8 @@ def tankQueued():
 def dpsQueued():
     ''' Returns the number of dps players needed to fill the queue.
     '''
-    if numQueued["damage"] < 4:
-        numNeeded = 4 - numQueued["damage"]
+    if numQueued["dps"] < 4:
+        numNeeded = 4 - numQueued["dps"]
         return str(numNeeded)
     else:
         return 0
@@ -91,10 +92,10 @@ def deQueue(PlayerID):
     if role == "tank":
         numQueued["tank"] -= 1
     elif role == "damage" or role == "dps":
-        numQueued["damage"] -= 1
+        numQueued["dps"] -= 1
     elif role == "support":
         numQueued["support"] -= 1
-    
+
     
 #good work gang
 def updatePlayerData(mystr, PlayerID):
@@ -116,7 +117,7 @@ def updatePlayerData(mystr, PlayerID):
         playerData[PlayerID]["tank"] = sr
     playerData[PlayerID]["queue"] = "none"
     playerData[PlayerID]["team"] = -1
-    print(playerData)
+    # print(playerData)
     savePlayerData()
     return True
 
@@ -141,4 +142,40 @@ def getAllPlayerData():
         If possible, should be formatted.
     '''
     return playerData
+
+def getTeam1(mmData):
+    ''' Gets team 1.
+    '''
+    team1 = {}
+    for player in mmData.keys():
+        if mmData[player]["team"] == 1:
+            team1[player] = mmData[player]["queue"]
+    return team1
+
+            
+def getTeam2(mmData):
+    ''' Gets team 2.
+    '''
+    team2 = {}
+    for player in mmData.keys():
+        if mmData[player]["team"] == 2:
+            team2[player] = mmData[player]["queue"]
+    return team2
+
+def printTeams(mmData):
+    team1 = getTeam1(mmData)
+    team2 = getTeam2(mmData)
+    teamA = "Team 1:\n"
+    teamB = "Team 2:\n"
+    for player in team1.keys():
+        teamA = teamA + player + "\t\t\t\t"
+        teamA = teamA + mmData[player]["queue"]
+        teamA = teamA + "\n"
+    for player in team2.keys():
+        teamB = teamB + player + "\t\t\t\t"
+        teamB = teamB + mmData[player]["queue"]
+        teamB = teamB + "\n"
+    message = "\n" + teamA + "\n" + teamB
+    return message
+     
 
