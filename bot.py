@@ -36,9 +36,6 @@ async def commands(ctx):
         
 @client.command()
 async def matchmake(ctx):
-        if numReadied < 12:
-                await ctx.send("Not enough players are readied!",
-                               "Use !ready to ready up.")
         await ctx.send("this doesn't work yet, you fool")
 
 @client.command(aliases=["support", "tank", "damage", "dps"])
@@ -108,4 +105,4 @@ async def flip(ctx):
                 await ctx.send("Tails!")
 
 
-client.run("TOKEN")
+client.run("token")

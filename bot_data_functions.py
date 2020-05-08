@@ -1,29 +1,36 @@
 import numpy as np
 import pickle
 
-def saveTest():
-    a = playerData
-    savePlayerData()
-    loadPlayerData()
 
 def savePlayerData():
+    ''' Saves the hashmap of player data.
+    '''
     with open("data.pickle", "wb") as handle:
         pickle.dump(playerData, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+
 def loadPlayerData():
+    ''' Loads the hashmap of player data.
+    '''
     with open('data.pickle', 'rb') as handle:
         playerData = pickle.load(handle)
     return playerData
 
+
 playerData = loadPlayerData()
 for player in playerData:
     playerData[player]["queue"] = "none"
-    playerData[player]["team"] = "none"
+    playerData[player]["team"] = -1
+
 
 numQueued = {"tank":0, "damage":0, "support":0}
 
 
 def queueFor(role, PlayerID):
+    ''' Removes the player from the queue
+        Sets the player's queued role to whatever they specified.
+        Updates number of players queued for each role.
+    '''
     deQueue(PlayerID)
     if role in playerData[PlayerID]:
         playerData[PlayerID]["queue"] = role
@@ -44,30 +51,41 @@ def queueFor(role, PlayerID):
     else:
         return("Please input your SR for that role!\n")
 
-    
 
 def suppQueued():
+    ''' Returns the number of support players needed to fill the queue.
+    '''
     if numQueued["support"] < 4:
         numNeeded = 4 - numQueued["support"]
         return str(numNeeded)
     else:
         return 0
+
     
 def tankQueued():
+    ''' Returns the number of tank players needed to fill the queue.
+    '''
     if numQueued["tank"] < 4:
         numNeeded = 4 - numQueued["tank"]
         return str(numNeeded)
     else:
         return 0
 
+
 def dpsQueued():
+    ''' Returns the number of dps players needed to fill the queue.
+    '''
     if numQueued["damage"] < 4:
         numNeeded = 4 - numQueued["damage"]
         return str(numNeeded)
     else:
         return 0
 
+
 def deQueue(PlayerID):
+    ''' Removes the player from the queue.
+        Updates number of players queued for each role.
+    '''
     role = playerData[PlayerID]["queue"]
     playerData[PlayerID]["queue"] = "none"
     if role == "tank":
@@ -80,6 +98,8 @@ def deQueue(PlayerID):
     
 #good work gang
 def updatePlayerData(mystr, PlayerID):
+    ''' Updates the hashmap of PlayerID's data.
+    '''
     userData = mystr.split()
     if userData[1].isalpha():
         return False
@@ -95,22 +115,30 @@ def updatePlayerData(mystr, PlayerID):
     elif(userData[0] == "!tank"):
         playerData[PlayerID]["tank"] = sr
     playerData[PlayerID]["queue"] = "none"
-    playerData[PlayerID]["team"] = "none"
+    playerData[PlayerID]["team"] = -1
     print(playerData)
     savePlayerData()
     return True
 
 
 def clearPlayerData():
+    ''' Clears playerData of everything.
+    '''
     playerData.clear()
     savePlayerData()
     return playerData
 
 
 def getPlayerData(PlayerID):
-    # I'd like for this to return a nice and cleanly formatted string with
-    # the player data
+    ''' Returns a specific player's data.
+        If possible, should be formatted.
+    '''
     return playerData[PlayerID]
 
+
 def getAllPlayerData():
+    ''' Returns all player's data.
+        If possible, should be formatted.
+    '''
     return playerData
+
