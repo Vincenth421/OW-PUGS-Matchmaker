@@ -181,6 +181,7 @@ def adjust(playerData, winner):
             role = playerData[i]['queue']
             playerData[i][role] -= 100
         playerData[i]['team'] = -1
+        playerData[i]['queue'] = 'none'
     
     return playerData
 
