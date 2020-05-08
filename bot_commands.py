@@ -163,7 +163,7 @@ def combine(playerData, tank, dps, supp):
         average1 += supp[0][0]
         average2 += supp[1][0]
 
-    return [playerData, int(average1/3), int(average2/3)]
+    return playerData
 
 # adjusts player sr based on winning team
 # no adjustments if tie
