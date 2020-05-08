@@ -126,7 +126,6 @@ def combine(playerData, tank, dps, supp):
         sReverse = True
     
     # add to team A or B depending on above calculations
-    # TODO: update playerData with team instead of adding to a list
     if dReverse:
         playerData[dps[1][1]]['team'] = 1
         playerData[dps[1][2]]['team'] = 1
