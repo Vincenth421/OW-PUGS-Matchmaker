@@ -19,54 +19,6 @@ import random
 # prefer 0 = no preference, 1 = mt, 2 = ot, 3 = dps, 4 = support
 
 
-#print(playerData["Player1"]["ready"])
-# "!support 1000"
-#def commandParse(string):
-#    if(string)
-
-
-# mystr = "!support 1000"
-
-# userData = mystr.split()
-# print(userData)
-
-def saveTest():
-    a = playerData
-    savePlayerData()
-    loadPlayerData()
-
-def savePlayerData():
-    with open("data.pickle", "wb") as handle:
-        pickle.dump(playerData, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-def loadPlayerData():
-    with open('data.pickle', 'rb') as handle:
-        playerData = pickle.load(handle)
-    return playerData
-
-playerData = loadPlayerData()
-
-#good work gang
-def updatePlayerData(mystr, PlayerID):
-    userData = mystr.split()
-    if PlayerID not in playerData:
-        playerData[PlayerID] = {}
-    if(userData[0] == "!support"):
-        playerData[PlayerID]["supportSR"] = userData[1]
-    elif(userData[0] == "!damage" or userData[0] == "!dps"):
-        playerData[PlayerID]["dpsSR"] = userData[1]
-    elif(userData[0] == "!tank"):
-        playerData[PlayerID]["tankSR"] = userData[1]
-    elif(userData[0] == "!ready"):
-    	playerData[PlayerID]["ready"] = not playerData[PlayerID]["ready"]
-    print(playerData)
-    savePlayerData()
-
-def getPlayerData(PlayerID):
-    # I'd like for this to return a nice and cleanly formatted string with
-    # the player data
-    return playerData[PlayerID]
-
 # main matchmaking function
 # chooses 12 players, splits into roles, matchmakes roles, and then combines them back together
 def matchmake(playerData):
