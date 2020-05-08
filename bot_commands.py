@@ -99,7 +99,7 @@ def split(playerData):
         elif role == 'support':
             supp.append([name, playerData[name]['support']])
 
-return [select(tank), select(dps), select(supp)]
+    return [select(tank), select(dps), select(supp)]
 
 # selects 4 players from a pool of any number
 # role comes in as a list, returns a list of the randomly selected players
@@ -123,20 +123,19 @@ def balance(role):
     for i in range(len(role)):
         totalsr += role[i][1]
     
-    for i in range(len(role)):
-        for j in range(i+1, len(role)):
-            avg1 = (role[i][1] + role[j][1]) / 2
-            avg2 = (totalsr - role[i][1] - role[j][1]) / 2
-            difference = avg1 - avg2
-            if abs(difference) < abs(bestDifference):
-                average2 = avg2
-                bestDifference = difference
-                bestPair = [avg1, role[i][0], role[j][0]]
+    for i in range(1, len(role)):
+        avg1 = (role[0][1] + role[i][1]) / 2
+        avg2 = (totalsr - role[0][1] - role[i][1]) / 2
+        difference = avg1 - avg2
+        if abs(difference) < abs(bestDifference):
+            average2 = avg2
+            bestDifference = difference
+            bestPair = [avg1, role[0][0], role[i][0]]
 
-otherPair = [average2]
-for i in range(len(role)):
-    if not (role[i][0] in bestPair):
-        otherPair.append(role[i][0])
+    otherPair = [average2]
+    for i in range(len(role)):
+        if not (role[i][0] in bestPair):
+            otherPair.append(role[i][0])
     
     both = [bestPair, otherPair]
     return both
@@ -203,15 +202,15 @@ def combine(tank, dps, supp):
         average2 += supp[1][0]
 
     # cameron's code, if buggy blame him
-    A.insert(0, average1/3)
-    B.insert(0, average2/3)
+    A.insert(0, int(average1/3))
+    B.insert(0, int(average2/3))
 
-return [A, B]
+    return [A, B]
 
 def main():
     allPlayerData = {
 'usr1':   {'dps': 3944, 'support': 1698, 'tank': 3682, 'queue': 'support'},
-'usr2':    {'dps': 2970, 'support': 2282, 'tank': 1653, 'queue': 'support'},
+'usr2':   {'dps': 2970, 'support': 2282, 'tank': 1653, 'queue': 'support'},
 'usr3':   {'dps': 3439, 'support': 3516, 'tank': 1677, 'queue': 'support'},
 'usr4':   {'dps': 3606, 'support': 2407, 'tank': 3533, 'queue': 'support'},
 'usr5':   {'dps': 2072, 'support': 1778, 'tank': 3733, 'queue': 'tank'},
