@@ -18,7 +18,6 @@ import random
 #P6	P9  */##
 # prefer 0 = no preference, 1 = mt, 2 = ot, 3 = dps, 4 = support
 
-
 # main matchmaking function
 # chooses 12 players, splits into roles, matchmakes roles, and then combines them back together
 def matchmake(playerData):
@@ -106,10 +105,10 @@ def combine(playerData, tank, dps, supp):
     suppDiff = supp[0][0] - supp[1][0]
     average1 = tank[0][0]
     average2 = tank[1][0]
-    playerData[tank[0][1]][team] = 1
-    playerData[tank[0][2]][team] = 1
-    playerData[tank[1][1]][team] = 2
-    playerData[tank[1][2]][team] = 2
+    playerData[tank[0][1]]['team'] = 1
+    playerData[tank[0][2]]['team'] = 1
+    playerData[tank[1][1]]['team'] = 2
+    playerData[tank[1][2]]['team'] = 2
     
     # brute force calculation of combined sr average
     bestDiff = tankDiff + dpsDiff + suppDiff
@@ -129,32 +128,32 @@ def combine(playerData, tank, dps, supp):
     # add to team A or B depending on above calculations
     # TODO: update playerData with team instead of adding to a list
     if dReverse:
-        playerData[dps[1][1]][team] = 1
-        playerData[dps[1][2]][team] = 1
-        playerData[dps[0][1]][team] = 2
-        playerData[dps[0][2]][team] = 2
+        playerData[dps[1][1]]['team'] = 1
+        playerData[dps[1][2]]['team'] = 1
+        playerData[dps[0][1]]['team'] = 2
+        playerData[dps[0][2]]['team'] = 2
         average1 += dps[1][0]
         average2 += dps[0][0]
     else:
-        playerData[dps[0][1]][team] = 1
-        playerData[dps[0][2]][team] = 1
-        playerData[dps[1][1]][team] = 2
-        playerData[dps[1][2]][team] = 2
+        playerData[dps[0][1]]['team'] = 1
+        playerData[dps[0][2]]['team'] = 1
+        playerData[dps[1][1]]['team'] = 2
+        playerData[dps[1][2]]['team'] = 2
         average1 += dps[0][0]
         average2 += dps[1][0]
     
     if sReverse:
-        playerData[supp[1][1]][team] = 1
-        playerData[supp[1][2]][team] = 1
-        playerData[supp[0][1]][team] = 2
-        playerData[supp[0][2]][team] = 2
+        playerData[supp[1][1]]['team'] = 1
+        playerData[supp[1][2]]['team'] = 1
+        playerData[supp[0][1]]['team'] = 2
+        playerData[supp[0][2]]['team'] = 2
         average1 += supp[1][0]
         average2 += supp[0][0]
     else:
-        playerData[supp[0][1]][team] = 1
-        playerData[supp[0][2]][team] = 1
-        playerData[supp[1][1]][team] = 2
-        playerData[supp[1][2]][team] = 2
+        playerData[supp[0][1]]['team'] = 1
+        playerData[supp[0][2]]['team'] = 1
+        playerData[supp[1][1]]['team'] = 2
+        playerData[supp[1][2]]['team'] = 2
         average1 += supp[0][0]
         average2 += supp[1][0]
 
@@ -165,35 +164,37 @@ def adjust(playerData, winner):
         return playerData
     
     for i in playerData.keys():
-        if(playerData[i][team] == winner):
-            role = playerData[i][queue]
+        if(playerData[i]['team'] == winner):
+            role = playerData[i]['queue']
             playerData[i][role] += 100
-        elif(playerData[i][team] != 'none'):
-            role = playerData[i][queue]
+        elif(playerData[i]['team'] != -1):
+            role = playerData[i]['queue']
             playerData[i][role] -= 100
-        playerData[i][team] = 'none'
+        playerData[i]['team'] = -1
     
     return playerData
 
 def main():
     allPlayerData = {
-'usr1':   {'dps': 3944, 'support': 1698, 'tank': 3682, 'queue': 'support'},
-'usr2':   {'dps': 2970, 'support': 2282, 'tank': 1653, 'queue': 'support'},
-'usr3':   {'dps': 3439, 'support': 3516, 'tank': 1677, 'queue': 'support'},
-'usr4':   {'dps': 3606, 'support': 2407, 'tank': 3533, 'queue': 'support'},
-'usr5':   {'dps': 2072, 'support': 1778, 'tank': 3733, 'queue': 'tank'},
-'usr6':   {'dps': 2524, 'support': 1944, 'tank': 3710, 'queue': 'tank'},
-'usr7':   {'dps': 3073, 'support': 3827, 'tank': 3335, 'queue': 'tank'},
-'usr8':   {'dps': 3037, 'support': 2442, 'tank': 3254, 'queue': 'tank'},
-'usr9':   {'dps': 3817, 'support': 2766, 'tank': 3894, 'queue': 'dps'},
-'usr10':  {'dps': 2254, 'support': 2285, 'tank': 3639, 'queue': 'dps'},
-'usr11':  {'dps': 1776, 'support': 1502, 'tank': 3808, 'queue': 'dps'},
-'usr12':  {'dps': 1776, 'support': 3902, 'tank': 2488, 'queue': 'dps'}
+'usr1':   {'dps': 3944, 'support': 1698, 'tank': 3682, 'queue': 'support', 'team': -1},
+'usr2':   {'dps': 2970, 'support': 2282, 'tank': 1653, 'queue': 'support', 'team': -1},
+'usr3':   {'dps': 3439, 'support': 3516, 'tank': 1677, 'queue': 'support', 'team': -1},
+'usr4':   {'dps': 3606, 'support': 2407, 'tank': 3533, 'queue': 'support', 'team': -1},
+'usr5':   {'dps': 2072, 'support': 1778, 'tank': 3733, 'queue': 'tank', 'team': -1},
+'usr6':   {'dps': 2524, 'support': 1944, 'tank': 3710, 'queue': 'tank', 'team': -1},
+'usr7':   {'dps': 3073, 'support': 3827, 'tank': 3335, 'queue': 'tank', 'team': -1},
+'usr8':   {'dps': 3037, 'support': 2442, 'tank': 3254, 'queue': 'tank', 'team': -1},
+'usr9':   {'dps': 3817, 'support': 2766, 'tank': 3894, 'queue': 'dps', 'team': -1},
+'usr10':  {'dps': 2254, 'support': 2285, 'tank': 3639, 'queue': 'dps', 'team': -1},
+'usr11':  {'dps': 1776, 'support': 1502, 'tank': 3808, 'queue': 'dps', 'team': -1},
+'usr12':  {'dps': 1776, 'support': 3902, 'tank': 2488, 'queue': 'dps', 'team': -1}
 }
+
     print(matchmake(allPlayerData))
+    print()
+    print(adjust(allPlayerData, 1))
 
 main()
-
 
 
   
