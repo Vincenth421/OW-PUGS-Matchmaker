@@ -92,14 +92,14 @@ def split(playerData):
   
   for name in playerData.keys: 
     role = playerData[name]['queue']:
-        if role == 'tank':
-            tank.append([name, playerData[name]['tank']])
-        elif role == 'dps':
-      	    dps.append([name, playerData[name]['dps']])
-        elif role == 'support':
-      	    supp.append([name, playerData[name]['support']])
+    if role == 'tank':
+        tank.append([name, playerData[name]['tank']])
+    elif role == 'dps':
+        dps.append([name, playerData[name]['dps']])
+    elif role == 'support':
+        supp.append([name, playerData[name]['support']])
   
-  return [select(tank), select(dps), select(supp)]
+    return [select(tank), select(dps), select(supp)]
 
 # selects 4 players from a pool of any number
 # role comes in as a list, returns a list of the randomly selected players
