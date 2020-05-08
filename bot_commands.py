@@ -1,5 +1,7 @@
 import numpy as np
 import pickle
+import random
+
 
 # [tankSR, dpsSR, suppSR, ready]
 # build 2 teams of 6 
@@ -65,12 +67,41 @@ def getPlayerData(PlayerID):
     # the player data
     return playerData[PlayerID]
         
-        
+# main matchmaking function
+# chooses 12 players, splits into roles, matchmakes roles, and then combines them back together
+def matchmake(playerData):
+    selectedPlayers = select(playerData)
+    roles = split(selectedPlayers)
+    
+    tank = roles[0]
+    dps = roles[1]
+    supp = roles[2]
+    
+    t = matchmake(tank)
+    d = matchmake(dps)
+    s = matchmake(supp)
+    
+    return combine(t, d, s)
+
+# selects 12 players from a pool of any number
+def select(playerData):
+    list = []
+    selected = {}
+    
+    for i in playerData.keys:
+        list.append(playerData[i])
+
+    for i in range(12):
+        num = random.randint(0, len(list)-1)
+        #TODO check for dupe random numbers
+        selected[list[num]] = playerData[list[num]].get()
+
+    return selected
         
 # ready is a bool
 # playerData is a hash table of 12 people
-# main function, calls matchmake and combine to return team A and team B
-def split(allPlayerData):
+# splits all players into their chosen roles
+def split(playerData):
   tank = []
   dps = []
   supp = []
@@ -84,18 +115,14 @@ def split(allPlayerData):
       if playerData[name]['suppSR'] != -1:
       	supp.append([name, playerData[name]['suppSR']])
   
-  t = matchmake(tank)
-  d = matchmake(dps)
-  s = matchmake(supp)
-  
-  return combine(t,d,s)
+  return [tank, dps, supp]
 
 # given a role hash table
 # add to the value bucket a new entry, Team A or B
 # 6 members on A, 6 on B
 # as even SR spread as possible
 # Assume that role is a list of length 4
-def matchmake(role):
+def balance(role):
     totalsr = 0
     for i in range(len(role)):
         totalsr += role[i][1]
