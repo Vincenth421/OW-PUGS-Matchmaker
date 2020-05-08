@@ -47,10 +47,8 @@ def queueFor(role, PlayerID):
         elif role == "none":
             deQueue(PlayerID)
             return ("Left the queue.\n")
-        else:
-            return("Invalid role.\n")
     else:
-        return("Please input your SR for that role!\n")
+        return("Invalid role.\n")
 
 
 def suppQueued():
@@ -83,6 +81,16 @@ def dpsQueued():
         return 0
 
 
+def allQueued():
+    if dpsQueued() != 0:
+        return False
+    if tankQueued() != 0:
+        return False
+    if suppQueued() != 0:
+        return False
+    return True
+
+
 def deQueue(PlayerID):
     ''' Removes the player from the queue.
         Updates number of players queued for each role.
@@ -95,6 +103,9 @@ def deQueue(PlayerID):
         numQueued["dps"] -= 1
     elif role == "support":
         numQueued["support"] -= 1
+    elif role == "none":
+        return "Not in queue.\n"
+    return "Left the queue.\n"
 
     
 #good work gang
@@ -135,6 +146,38 @@ def getPlayerData(PlayerID):
         If possible, should be formatted.
     '''
     return playerData[PlayerID]
+
+
+def printPlayerData(PlayerID):
+    message = ""
+    for key in playerData[PlayerID].keys():
+        if key == "support":
+            message = message + "\nSupport: " + str(playerData[PlayerID]["support"])
+        elif key == "dps":
+            message = message + "\nDPS: " + str(playerData[PlayerID]["dps"])
+        elif key == "tank":
+            message = message + "\nTank: " + str(playerData[PlayerID]["tank"])
+    if message == "":
+        message = "No SR data recorded."
+    return message
+
+
+def printQueueData(PlayerID):
+    if playerData[PlayerID]["queue"] == "none":
+        message = " is not queued!"
+    else:
+        message = " is queued for: " + playerData[PlayerID]["queue"]
+    return message
+
+
+def printQueue():
+    queue = ""
+    for player in playerData.keys():
+        if playerData[player]["queue"] != "none":
+            queue = queue + player[:-5] + ": " + playerData[player]["queue"] + "\n"
+    if queue == "":
+        queue = "Nobody is in queue."
+    return queue
 
 
 def getAllPlayerData():
