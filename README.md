@@ -13,6 +13,6 @@ Timothy Wang
 
 Daniel Tong
 
-Michael Gloner
-
 Vincent Hwang
+
+Michael Gloner
