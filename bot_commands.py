@@ -125,6 +125,7 @@ def combine(tank, dps, supp):
         sReverse = True
     
     # add to team A or B depending on above calculations
+    # TODO: update playerData with team instead of adding to a list
     if dReverse:
         A.append(dps[1][1])
         A.append(dps[1][2])
@@ -160,6 +161,21 @@ def combine(tank, dps, supp):
     B.insert(0, int(average2/3))
 
     return [A, B]
+
+def adjust(playerData, winner):
+    if(winner == 0):
+        return playerData
+    
+    for i in playerData.keys():
+        if(playerData[i][team] == winner):
+            role = playerData[i][queue]
+            playerData[i][role] += 100
+        elif(playerData[i][team] != 'none'):
+            role = playerData[i][queue]
+            playerData[i][role] -= 100
+        playerData[i][team] = 'none'
+    
+    return playerData
 
 def main():
     allPlayerData = {
