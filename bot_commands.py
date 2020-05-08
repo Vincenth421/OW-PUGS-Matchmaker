@@ -18,6 +18,7 @@ import random
 #P6	P9  */##
 # prefer 0 = no preference, 1 = mt, 2 = ot, 3 = dps, 4 = support
 
+# Map pool
 mapList = ['Blizzard World', 'Busan', 'Dorado', 
            'Eichenwalde', 'Hanamura', 'Havana', 
            'Hollywood', 'Ilios', 'Junkertown', 
@@ -193,6 +194,7 @@ def adjust(playerData, winner):
     
     return playerData
 
+# Selects a random map from the map pool
 def randomMap():
     i = random.randint(0,18)
     return mapList[i]
@@ -217,4 +219,4 @@ def main():
     print()
     print(adjust(allPlayerData, 1))
 
-main()
+#main()
