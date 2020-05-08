@@ -32,7 +32,7 @@ def matchmake(playerData):
     d = balance(dps)
     s = balance(supp)
     
-    return combine(t, d, s)
+    return combine(playerData, t, d, s)
 
 # ready is a bool
 # playerData is a hash table of any number of people
@@ -98,7 +98,7 @@ def balance(role):
 # combines the different roles into a team
 # average sr is first element in both team A and team B
 # good work team
-def combine(tank, dps, supp):
+def combine(playerData, tank, dps, supp):
     dReverse = False
     sReverse = False
     tankDiff = tank[0][0] - tank[1][0]
@@ -106,8 +106,10 @@ def combine(tank, dps, supp):
     suppDiff = supp[0][0] - supp[1][0]
     average1 = tank[0][0]
     average2 = tank[1][0]
-    A = [tank[0][1], tank[0][2]]
-    B = [tank[1][1], tank[1][2]]
+    playerData[tank[0][1]][team] = 1
+    playerData[tank[0][2]][team] = 1
+    playerData[tank[1][1]][team] = 2
+    playerData[tank[1][2]][team] = 2
     
     # brute force calculation of combined sr average
     bestDiff = tankDiff + dpsDiff + suppDiff
@@ -126,40 +128,36 @@ def combine(tank, dps, supp):
     
     # add to team A or B depending on above calculations
     if dReverse:
-        A.append(dps[1][1])
-        A.append(dps[1][2])
-        B.append(dps[0][1])
-        B.append(dps[0][2])
+        playerData[dps[1][1]][team] = 1
+        playerData[dps[1][2]][team] = 1
+        playerData[dps[0][1]][team] = 2
+        playerData[dps[0][2]][team] = 2
         average1 += dps[1][0]
         average2 += dps[0][0]
     else:
-        A.append(dps[0][1])
-        A.append(dps[0][2])
-        B.append(dps[1][1])
-        B.append(dps[1][2])
+        playerData[dps[0][1]][team] = 1
+        playerData[dps[0][2]][team] = 1
+        playerData[dps[1][1]][team] = 2
+        playerData[dps[1][2]][team] = 2
         average1 += dps[0][0]
         average2 += dps[1][0]
     
     if sReverse:
-        A.append(supp[1][1])
-        A.append(supp[1][2])
-        B.append(supp[0][1])
-        B.append(supp[0][2])
+        playerData[supp[1][1]][team] = 1
+        playerData[supp[1][2]][team] = 1
+        playerData[supp[0][1]][team] = 2
+        playerData[supp[0][2]][team] = 2
         average1 += supp[1][0]
         average2 += supp[0][0]
     else:
-        A.append(supp[0][1])
-        A.append(supp[0][2])
-        B.append(supp[1][1])
-        B.append(supp[1][2])
+        playerData[supp[0][1]][team] = 1
+        playerData[supp[0][2]][team] = 1
+        playerData[supp[1][1]][team] = 2
+        playerData[supp[1][2]][team] = 2
         average1 += supp[0][0]
         average2 += supp[1][0]
 
-    # cameron's code, if buggy blame him
-    A.insert(0, int(average1/3))
-    B.insert(0, int(average2/3))
-
-    return [A, B]
+    return [playerData, int(average1/3), int(average2/3)]
 
 def main():
     allPlayerData = {
