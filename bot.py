@@ -22,6 +22,14 @@ async def on_ready():
 ##    sender = str(message.author)
 ##    await client.process_commands(message)
 
+        
+@client.command()
+async def ping(ctx):
+    await ctx.send("MatchMaker Bot's Ping: {0}".format(round(client.latency, 2)))
+
+@client.command(aliases=["randomMap", "randommap"])
+async def map(ctx):
+        await ctx.send(randomMap())
 
 @client.command()
 async def mention(ctx):
@@ -146,4 +154,4 @@ async def flip(ctx):
                 await ctx.send("Tails!")
 
 
-client.run("TOKEN")
+client.run("NzA3NzI0OTUzMzUyNTM2MTU2.XrN0jQ.bQzV16CNMQZ3cPSPy1F3mS-rbUo")
