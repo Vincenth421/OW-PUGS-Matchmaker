@@ -138,36 +138,30 @@ def combine(playerData, tank, dps, supp):
         playerData[dps[1][2]]['team'] = 1
         playerData[dps[0][1]]['team'] = 2
         playerData[dps[0][2]]['team'] = 2
+        average1 += dps[1][0]
+        average2 += dps[0][0]
     else:
         playerData[dps[0][1]]['team'] = 1
         playerData[dps[0][2]]['team'] = 1
         playerData[dps[1][1]]['team'] = 2
         playerData[dps[1][2]]['team'] = 2
+        average1 += dps[0][0]
+        average2 += dps[1][0]
     
     if sReverse:
         playerData[supp[1][1]]['team'] = 1
         playerData[supp[1][2]]['team'] = 1
         playerData[supp[0][1]]['team'] = 2
         playerData[supp[0][2]]['team'] = 2
+        average1 += supp[1][0]
+        average2 += supp[0][0]
     else:
         playerData[supp[0][1]]['team'] = 1
         playerData[supp[0][2]]['team'] = 1
         playerData[supp[1][1]]['team'] = 2
         playerData[supp[1][2]]['team'] = 2
-    
-    #dequeue everyone after being placed on a team
-    playerData[tank[0][1]]['queue'] = 'none'
-    playerData[tank[0][2]]['queue'] = 'none'
-    playerData[tank[1][1]]['queue'] = 'none'
-    playerData[tank[1][2]]['queue'] = 'none'
-    playerData[dps[0][1]]['queue'] = 'none'
-    playerData[dps[0][2]]['queue'] = 'none'
-    playerData[dps[1][1]]['queue'] = 'none'
-    playerData[dps[1][2]]['queue'] = 'none'
-    playerData[supp[0][1]]['queue'] = 'none'
-    playerData[supp[0][2]]['queue'] = 'none'
-    playerData[supp[1][1]]['queue'] = 'none'
-    playerData[supp[1][2]]['queue'] = 'none'
+        average1 += supp[0][0]
+        average2 += supp[1][0]
 
     return playerData
 
@@ -187,6 +181,7 @@ def adjust(playerData, winner):
             role = playerData[i]['queue']
             playerData[i][role] -= 100
         playerData[i]['team'] = -1
+        playerData[i]['queue'] = 'none'
     
     return playerData
 
@@ -211,6 +206,3 @@ def main():
     print(adjust(allPlayerData, 1))
 
 main()
-
-
-  
