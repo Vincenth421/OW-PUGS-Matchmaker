@@ -91,13 +91,13 @@ def split(playerData):
   supp = []
   
   for name in playerData.keys: 
-    if playerData[name]['ready']:
+    role = playerData[name]['queue']:
         #TODO: maybe need to change what the boolean is for not selecting a role?
-        if playerData[name]['tank'] != -1:
+        if role == 'tank':
             tank.append([name, playerData[name]['tank']])
-        if playerData[name]['dps'] != -1:
+        elif role == 'dps':
       	    dps.append([name, playerData[name]['dps']])
-        if playerData[name]['support'] != -1:
+        elif role == 'support':
       	    supp.append([name, playerData[name]['support']])
   
   return [select(tank), select(dps), select(supp)]
@@ -124,7 +124,7 @@ def balance(role):
     totalsr = 0
     for i in range(len(role)):
         totalsr += role[i][1]
-  
+
     for i in range(len(role)):
         for j in range(i, len(role)):
             avg1 = (role[i][1] + role[j][1]) / 2
