@@ -4,13 +4,15 @@ from discord.ext import commands
 from bot_data_functions import *
 from bot_commands import *
 
-client = commands.Bot(command_prefix = "!")
 
+client = commands.Bot(command_prefix = ".")     
+
+        
 @client.event
 async def on_ready():
         loadPlayerData()
         print("bot is ready")
-        channel = client.get_channel(707749690396901508)
+        # channel = client.get_channel(707749690396901508)
         # command testing channel
         # await channel.send("Bot Restarted.")
         # print(clearPlayerData())
@@ -27,9 +29,11 @@ async def on_ready():
 async def ping(ctx):
     await ctx.send("MatchMaker Bot's Ping: {0}".format(round(client.latency, 2)))
 
+
 @client.command(aliases=["randomMap", "randommap"])
 async def map(ctx):
         await ctx.send(randomMap())
+
 
 @client.command()
 async def mention(ctx):
@@ -134,22 +138,19 @@ async def sr(ctx):
                 sr = printPlayerData(sender)
                 await ctx.send(sr)
         except:
-                await ctx.send("Error.")
-
-
-@client.command()
-async def status(ctx):
-        try:
-                sender = str(ctx.message.author)
-                sr = printQueueData(sender)
-                await ctx.send(ctx.message.author.mention + sr)
-        except:
                 await ctx.send("Error 404: SR doesn't exist")
 
 
 @client.command()
+async def status(ctx):
+        sender = str(ctx.message.author)
+        sr = printQueueData(sender)
+        await ctx.send(ctx.message.author.mention + sr)
+
+
+@client.command()
 async def allSR(ctx):
-        sr = getAllPlayerData()
+        sr = printAllPlayerData()
         await ctx.send(sr)
        
 

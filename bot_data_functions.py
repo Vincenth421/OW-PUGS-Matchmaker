@@ -113,6 +113,7 @@ def updatePlayerData(mystr, PlayerID):
     ''' Updates the hashmap of PlayerID's data.
     '''
     userData = mystr.split()
+    role = userData[0][1:]
     if userData[1].isalpha():
         return False
     sr = int(userData[1])
@@ -120,11 +121,11 @@ def updatePlayerData(mystr, PlayerID):
         return False
     if PlayerID not in playerData:
         playerData[PlayerID] = {}
-    if(userData[0] == "!support"):
+    if(role == "support"):
         playerData[PlayerID]["support"] = sr
-    elif(userData[0] == "!damage" or userData[0] == "!dps"):
+    elif(role == "damage" or userData[0] == "!dps"):
         playerData[PlayerID]["dps"] = sr
-    elif(userData[0] == "!tank"):
+    elif(role == "tank"):
         playerData[PlayerID]["tank"] = sr
     playerData[PlayerID]["queue"] = "none"
     playerData[PlayerID]["team"] = -1
@@ -157,6 +158,16 @@ def printPlayerData(PlayerID):
             message = message + "\nDPS: " + str(playerData[PlayerID]["dps"])
         elif key == "tank":
             message = message + "\nTank: " + str(playerData[PlayerID]["tank"])
+    if message == "":
+        message = "No SR data recorded."
+    message = PlayerID[:-5] + message
+    return message
+
+
+def printAllPlayerData():
+    message = ""
+    for PlayerID in playerData.keys():
+        message = message + printPlayerData(PlayerID) + "\n\n"
     if message == "":
         message = "No SR data recorded."
     return message
