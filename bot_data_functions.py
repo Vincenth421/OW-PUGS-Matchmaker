@@ -261,20 +261,24 @@ def getTeam2(mmData):
             team2[player] = mmData[player]["queue"]
     return team2
 
-def printTeams(mmData):
+def printTeams(mmList):
     ''' Returns a formatted string containing all players for both teams.
     '''
+    mmData = mmList[0]
     team1 = getTeam1(mmData)
     team2 = getTeam2(mmData)
-    teamA = "Team 1:\n"
-    teamB = "Team 2:\n"
+    teamA = "Team 1: Avg = " + str(mmList[1]) + "\n"
+    teamB = "Team 2: Avg = " + str(mmList[2]) + "\n"
     for player in team1.keys():
-        teamA = teamA + player + "\t\t\t\t"
-        teamA = teamA + mmData[player]["queue"]
+        if mmData[player]["queue"] == "support":
+            teamA = teamA + mmData[player]["queue"] + "\t\t\t"
+        else:
+            teamA = teamA + mmData[player]["queue"] + "\t\t\t\t"
+        teamA = teamA + player
         teamA = teamA + "\n"
     for player in team2.keys():
-        teamB = teamB + player + "\t\t\t\t"
-        teamB = teamB + mmData[player]["queue"]
+        teamB = teamB + mmData[player]["queue"] + "\t\t\t\t"
+        teamB = teamB + player
         teamB = teamB + "\n"
     message = "\n" + teamA + "\n" + teamB
     return message

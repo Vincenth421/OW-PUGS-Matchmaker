@@ -42,6 +42,11 @@ async def mention(ctx):
 
 
 @client.command()
+async def gay(ctx):
+        await ctx.send(ctx.message.author.mention + " is gay :)")
+
+
+@client.command()
 async def commands(ctx):
         string1 = "To input your SR, please use the following commands:\n.tank <SR>"
         string2 = "\n.dps <SR>\n.support <SR>\n\nTo see your SR, use .sr\n"
@@ -57,16 +62,20 @@ async def commands(ctx):
 async def mm(ctx):
         mylist = getAllPlayerData()
         matchList = matchmake(mylist)
-        if matchList == -1:
+        if matchList[0] == -1:
                 await ctx.send("Not enough players queued.")
         else:
                 await ctx.send(printTeams(matchList))
-                savePlayerData(matchList)
+                savePlayerData(matchList[0])
         
 
 @client.command(aliases=["w"])
 async def win(ctx):
-        await ctx.send("Congrats Team " + ctx.message.content[-1:])
+        if ctx.message.content[-1:] != "0":
+                await ctx.send("Congrats Team " + ctx.message.content[-1:])
+        else:
+                await ctx.send("My algorithm is so good, t"
+                               "he teams were perfectly balanced.")
         adjust(int(ctx.message.content[-1:]))
 
 
@@ -78,7 +87,7 @@ async def win(ctx):
 ##                await ctx.send("Not enough players queued.")
 ##        else:
 ##                await ctx.send(printTeams(matchList))
-        
+
 
 @client.command(aliases=["support", "supp", "tank", "damage", "dps"])
 async def update(ctx):
