@@ -261,6 +261,7 @@ def getTeam2(mmData):
             team2[player] = mmData[player]["queue"]
     return team2
 
+
 def printTeams(mmList):
     ''' Returns a formatted string containing all players for both teams.
     '''
@@ -277,10 +278,18 @@ def printTeams(mmList):
         teamA = teamA + player
         teamA = teamA + "\n"
     for player in team2.keys():
-        teamB = teamB + mmData[player]["queue"] + "\t\t\t\t"
+        if mmData[player]["queue"] == "support":
+            teamB = teamB + mmData[player]["queue"] + "\t\t\t"
+        else:
+            teamB = teamB + mmData[player]["queue"] + "\t\t\t\t"
         teamB = teamB + player
         teamB = teamB + "\n"
     message = "\n" + teamA + "\n" + teamB
     return message
-     
+
+
+def getPlayerTeam(playerID):
+    playerData = loadPlayerData()
+    team = str(playerData[playerID]["team"])
+    return team
 

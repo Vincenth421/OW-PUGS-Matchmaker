@@ -4,7 +4,6 @@ from discord.ext import commands
 from bot_data_functions import *
 from bot_commands import *
 
-
 client = commands.Bot(command_prefix = ".")
 
         
@@ -31,6 +30,18 @@ async def ping(ctx):
     await ctx.send("MatchMaker Bot's Ping: {0}".format(round(client.latency, 2)))
 
 
+@client.command()
+async def team(ctx):
+        sender = str(ctx.message.author)
+        team = getPlayerTeam(sender)
+        if team == "-1":
+                await ctx.send(ctx.message.author.mention +
+                               ", you're not on a team.")
+        else:
+                await ctx.send(ctx.message.author.mention +
+                               ", you're on team " + str(team))
+
+
 @client.command(aliases=["randomMap", "randommap"])
 async def map(ctx):
         await ctx.send(randomMap())
@@ -41,9 +52,28 @@ async def mention(ctx):
         await ctx.send(ctx.message.author.mention)
 
 
-@client.command()
+@client.command(aliases=["bi", "pan"])
 async def gay(ctx):
-        await ctx.send(ctx.message.author.mention + " is gay :)")
+        i = random.randint(0,8)
+        if (i % 8) == 0:
+                await ctx.send(ctx.message.author.mention + " is gay.")
+        elif (i % 8) == 1:
+                await ctx.send(ctx.message.author.mention + " is straight.")
+        elif (i % 8) == 2:
+                await ctx.send(ctx.message.author.mention + " is asexual.")
+        elif (i % 8) == 3:
+                await ctx.send(ctx.message.author.mention + " is bisexual.")
+        elif (i % 8) == 4:
+                await ctx.send(ctx.message.author.mention + " is closeted :0.")
+        elif (i % 8) == 5:
+                await ctx.send(ctx.message.author.mention + " just came out!")
+        elif (i % 8) == 6:
+                await ctx.send(ctx.message.author.mention + " is pan.")
+        elif (i % 8) == 7:
+                await ctx.send(ctx.message.author.mention + " is sexy af.")
+        elif (i % 8) == 8:
+                await ctx.send(ctx.message.author.mention +
+                               " will probably die alone :(")
 
 
 @client.command()
