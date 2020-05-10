@@ -172,7 +172,7 @@ def combine(playerData, tank, dps, supp):
         average1 += supp[0][0]
         average2 += supp[1][0]
 
-    return playerData
+    return [playerData, int(average1/3), int(average2/3)]
 
 
 # Selects a random map from the map pool
