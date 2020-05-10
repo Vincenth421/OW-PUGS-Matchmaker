@@ -5,7 +5,7 @@ from bot_data_functions import *
 from bot_commands import *
 
 
-client = commands.Bot(command_prefix = ".")     
+client = commands.Bot(command_prefix = ".")
 
         
 @client.event
@@ -16,6 +16,7 @@ async def on_ready():
         # command testing channel
         # await channel.send("Bot Restarted.")
         # print(clearPlayerData())
+
 
 ##@client.event
 ##async def on_message(message):
@@ -42,9 +43,14 @@ async def mention(ctx):
 
 @client.command()
 async def commands(ctx):
-        cmds = "Working commands: mention, support, tank, damage/dps, ready, sr, clear, flip/coin"
-        link = "http://blue.cs.sonoma.edu/~cholland/matchmaker.html"
-        await ctx.send(cmds + "\n" + link)
+        string1 = "To input your SR, please use the following commands:\n.tank <SR>"
+        string2 = "\n.dps <SR>\n.support <SR>\n\nTo see your SR, use .sr\n"
+        string3 = "To queue for a role, use .q <role>\nTo see the current queue, use .q"
+        string3_5 = "\nTo see the roles needed to make a match, use .roles"
+        string4 = "\n\nTo begin matchmaking, use .mm\n\nTo report the winning team, "
+        string5 = "use .win <1/2>\nIn case of a tie, use .win 0"
+        await ctx.send(string1 + string2 + string3 + string3_5
+                       + string4 + string5)
 
         
 @client.command(aliases=["matchmake"])
@@ -57,23 +63,23 @@ async def mm(ctx):
                 await ctx.send(printTeams(matchList))
         
 
-@client.command()
+@client.command(aliases=["w"])
 async def win(ctx):
-        mylist = matchmakeData()
-        newData = adjust(mylist, ctx.message.content)
+        await ctx.send("Congrats Team " + ctx.message.content[-1:])
+        adjust(ctx.message.content[-1:])
 
 
-@client.command(aliases=["testmatchmake"])
-async def testmm(ctx):
-        mylist = matchmakeData()
-        matchList = matchmake(mylist)
-        if matchList == -1:
-                await ctx.send("Not enough players queued.")
-        else:
-                await ctx.send(printTeams(matchList))
+##@client.command(aliases=["testmatchmake"])
+##async def testmm(ctx):
+##        mylist = matchmakeData()
+##        matchList = matchmake(mylist)
+##        if matchList == -1:
+##                await ctx.send("Not enough players queued.")
+##        else:
+##                await ctx.send(printTeams(matchList))
         
 
-@client.command(aliases=["support", "tank", "damage", "dps"])
+@client.command(aliases=["support", "supp", "tank", "damage", "dps"])
 async def update(ctx):
         mystr = ctx.message.content
         sender = str(ctx.message.author)
@@ -86,7 +92,7 @@ async def update(ctx):
 @client.command(aliases=["q"])
 async def queue(ctx, role="none"):
         if role == "none":
-                await ctx.send(printQueue())
+                await ctx.send(ctx.message.author.mention + "\n" + printQueue())
         else:
                 sender = str(ctx.message.author)
                 message = (queueFor(role, sender)) + "Roles Needed:\n"
@@ -99,6 +105,7 @@ async def queue(ctx, role="none"):
                 if message == "Roles Needed:\n":
                         message = "All roles filled."
                 await ctx.send(message)
+
 
 @client.command()
 async def roles(ctx):
@@ -114,7 +121,7 @@ async def roles(ctx):
         await ctx.send(message)
         
         
-@client.command()
+@client.command(aliases=["l"])
 async def leave(ctx):
         sender = str(ctx.message.author)
         message = deQueue(sender)
@@ -131,7 +138,7 @@ async def leave(ctx):
         await ctx.send(message)
 
 
-@client.command()
+@client.command(aliases=["SR"])
 async def sr(ctx):
         try:
                 sender = str(ctx.message.author)
@@ -148,10 +155,13 @@ async def status(ctx):
         await ctx.send(ctx.message.author.mention + sr)
 
 
-@client.command()
+@client.command(aliases=["allsr"])
 async def allSR(ctx):
-        sr = printAllPlayerData()
-        await ctx.send(sr)
+        try:
+                sr = printAllPlayerData()
+                await ctx.send(sr)
+        except:
+                await ctx.send("Error 404: SR doesn't exist")
        
 
 @client.command()

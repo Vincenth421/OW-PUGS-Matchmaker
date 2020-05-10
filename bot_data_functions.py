@@ -1,20 +1,20 @@
 import numpy as np
-import pickle
+import json
 import random
 
 
 def savePlayerData():
     ''' Saves the hashmap of player data.
     '''
-    with open("data.pickle", "wb") as handle:
-        pickle.dump(playerData, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    with open("data.json", "w") as f:
+        json.dump(playerData, f, indent=4)
 
 
 def loadPlayerData():
     ''' Loads the hashmap of player data.
     '''
-    with open('data.pickle', 'rb') as handle:
-        playerData = pickle.load(handle)
+    with open('data.json', 'r') as f:
+        playerData = json.load(f)
     return playerData
 
 
@@ -22,6 +22,12 @@ playerData = loadPlayerData()
 for player in playerData:
     playerData[player]["queue"] = "none"
     playerData[player]["team"] = -1
+
+def clearQueue():
+    for player in playerData:
+        playerData[player]["queue"] = "none"
+    savePlayerData()
+clearQueue()
 
 
 numQueued = {"tank":0, "dps":0, "support":0}
@@ -35,6 +41,7 @@ def queueFor(role, PlayerID):
     deQueue(PlayerID)
     if role in playerData[PlayerID]:
         playerData[PlayerID]["queue"] = role
+        savePlayerData()
         if role == "tank":
             numQueued["tank"] += 1
             return ("Queued for tank.\n")
@@ -70,6 +77,29 @@ def tankQueued():
     else:
         return 0
 
+# adjusts player sr based on winning team
+# no adjustments if tie
+# winner must be either 0, 1, or 2
+# playerData is a hashtable of all players
+def adjust(winner):
+    playerData = loadPlayerData()
+    
+    if(winner == 0):
+        return playerData
+    
+    for player in playerData.keys():
+        if(playerData[player]['team'] == winner):
+            role = playerData[player]['queue']
+            playerData[player][role] += 100
+        elif(playerData[player]['team'] != -1):
+            role = playerData[player]['queue']
+            playerData[player][role] -= 100
+        playerData[player]['team'] = -1
+        playerData[player]['queue'] = 'none'
+
+    savePlayerData()
+    return playerData
+
 
 def dpsQueued():
     ''' Returns the number of dps players needed to fill the queue.
@@ -82,6 +112,8 @@ def dpsQueued():
 
 
 def allQueued():
+    ''' Returns true if all queue conditions are met.
+    '''
     if dpsQueued() != 0:
         return False
     if tankQueued() != 0:
@@ -117,13 +149,13 @@ def updatePlayerData(mystr, PlayerID):
     if userData[1].isalpha():
         return False
     sr = int(userData[1])
-    if sr < 0:
+    if sr < 0 or sr > 5000:
         return False
     if PlayerID not in playerData:
         playerData[PlayerID] = {}
-    if(role == "support"):
+    if(role == "support" or role == "supp"):
         playerData[PlayerID]["support"] = sr
-    elif(role == "damage" or userData[0] == "!dps"):
+    elif(role == "damage" or role == "dps"):
         playerData[PlayerID]["dps"] = sr
     elif(role == "tank"):
         playerData[PlayerID]["tank"] = sr
@@ -146,18 +178,22 @@ def getPlayerData(PlayerID):
     ''' Returns a specific player's data.
         If possible, should be formatted.
     '''
-    return playerData[PlayerID]
+    pData = loadPlayerData()
+    return pData[PlayerID]
 
 
 def printPlayerData(PlayerID):
+    ''' Returns a formatted string with specific user data.
+    '''
+    pData = getAllPlayerData()
     message = ""
-    for key in playerData[PlayerID].keys():
+    for key in pData[PlayerID].keys():
         if key == "support":
-            message = message + "\nSupport: " + str(playerData[PlayerID]["support"])
+            message = message + "\nSupport: " + str(pData[PlayerID]["support"])
         elif key == "dps":
-            message = message + "\nDPS: " + str(playerData[PlayerID]["dps"])
+            message = message + "\nDPS: " + str(pData[PlayerID]["dps"])
         elif key == "tank":
-            message = message + "\nTank: " + str(playerData[PlayerID]["tank"])
+            message = message + "\nTank: " + str(pData[PlayerID]["tank"])
     if message == "":
         message = "No SR data recorded."
     message = PlayerID[:-5] + message
@@ -165,6 +201,8 @@ def printPlayerData(PlayerID):
 
 
 def printAllPlayerData():
+    ''' Returns a formatted string with all user data.
+    '''
     message = ""
     for PlayerID in playerData.keys():
         message = message + printPlayerData(PlayerID) + "\n\n"
@@ -174,6 +212,8 @@ def printAllPlayerData():
 
 
 def printQueueData(PlayerID):
+    ''' Returns a formatted string about a specific user's queue status.
+    '''
     if playerData[PlayerID]["queue"] == "none":
         message = " is not queued!"
     else:
@@ -182,10 +222,13 @@ def printQueueData(PlayerID):
 
 
 def printQueue():
+    ''' Returns a formatted string with all the users in queue.
+    '''
+    pData = getAllPlayerData()
     queue = ""
-    for player in playerData.keys():
-        if playerData[player]["queue"] != "none":
-            queue = queue + player[:-5] + ": " + playerData[player]["queue"] + "\n"
+    for player in pData.keys():
+        if pData[player]["queue"] != "none":
+            queue = queue + player[:-5] + ": " + pData[player]["queue"] + "\n"
     if queue == "":
         queue = "Nobody is in queue."
     return queue
@@ -195,7 +238,9 @@ def getAllPlayerData():
     ''' Returns all player's data.
         If possible, should be formatted.
     '''
-    return playerData
+    pData = loadPlayerData()
+    return pData
+
 
 def getTeam1(mmData):
     ''' Gets team 1.
@@ -217,6 +262,8 @@ def getTeam2(mmData):
     return team2
 
 def printTeams(mmData):
+    ''' Returns a formatted string containing all players for both teams.
+    '''
     team1 = getTeam1(mmData)
     team2 = getTeam2(mmData)
     teamA = "Team 1:\n"
