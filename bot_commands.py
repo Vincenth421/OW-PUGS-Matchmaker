@@ -74,8 +74,8 @@ def select(role):
     selected = []
     already_played = []
     for i in role:
-		if i['team'] == -1:
-			selected.append(i)
+	if i['team'] == -1:
+		selected.append(i)
     		if len(selected) == 4:
 				return selected
 		else: 
