@@ -3,7 +3,7 @@ import json
 import random
 
 
-def savePlayerData():
+def savePlayerData(playerData):
     ''' Saves the hashmap of player data.
     '''
     with open("data.json", "w") as f:
@@ -26,7 +26,7 @@ for player in playerData:
 def clearQueue():
     for player in playerData:
         playerData[player]["queue"] = "none"
-    savePlayerData()
+    savePlayerData(playerData)
 clearQueue()
 
 
@@ -41,7 +41,7 @@ def queueFor(role, PlayerID):
     deQueue(PlayerID)
     if role in playerData[PlayerID]:
         playerData[PlayerID]["queue"] = role
-        savePlayerData()
+        savePlayerData(playerData)
         if role == "tank":
             numQueued["tank"] += 1
             return ("Queued for tank.\n")
@@ -97,7 +97,7 @@ def adjust(winner):
         playerData[player]['team'] = -1
         playerData[player]['queue'] = 'none'
 
-    savePlayerData()
+    savePlayerData(playerData)
     return playerData
 
 
@@ -162,7 +162,7 @@ def updatePlayerData(mystr, PlayerID):
     playerData[PlayerID]["queue"] = "none"
     playerData[PlayerID]["team"] = -1
     # print(playerData)
-    savePlayerData()
+    savePlayerData(playerData)
     return True
 
 
@@ -170,7 +170,7 @@ def clearPlayerData():
     ''' Clears playerData of everything.
     '''
     playerData.clear()
-    savePlayerData()
+    savePlayerData(playerData)
     return playerData
 
 

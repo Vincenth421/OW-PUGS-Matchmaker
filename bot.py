@@ -61,12 +61,13 @@ async def mm(ctx):
                 await ctx.send("Not enough players queued.")
         else:
                 await ctx.send(printTeams(matchList))
+                savePlayerData(matchList)
         
 
 @client.command(aliases=["w"])
 async def win(ctx):
         await ctx.send("Congrats Team " + ctx.message.content[-1:])
-        adjust(ctx.message.content[-1:])
+        adjust(int(ctx.message.content[-1:]))
 
 
 ##@client.command(aliases=["testmatchmake"])

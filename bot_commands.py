@@ -1,5 +1,4 @@
 import numpy as np
-import pickle
 import random
 
 
@@ -71,6 +70,7 @@ def split(playerData):
 # selects 4 players from a pool of any number
 # role comes in as a list, returns a list of the randomly selected players
 def select(role):
+    # print(len(role))
     selected = []
     nums = np.random.choice(len(role), 4, replace=False)
     for i in range(len(nums)):
@@ -174,25 +174,6 @@ def combine(playerData, tank, dps, supp):
 
     return playerData
 
-# adjusts player sr based on winning team
-# no adjustments if tie
-# winner must be either 0, 1, or 2
-# playerData is a hashtable of all players
-def adjust(playerData, winner):
-    if(winner == 0):
-        return playerData
-    
-    for i in playerData.keys():
-        if(playerData[i]['team'] == winner):
-            role = playerData[i]['queue']
-            playerData[i][role] += 100
-        elif(playerData[i]['team'] != -1):
-            role = playerData[i]['queue']
-            playerData[i][role] -= 100
-        playerData[i]['team'] = -1
-        playerData[i]['queue'] = 'none'
-    
-    return playerData
 
 # Selects a random map from the map pool
 def randomMap():
