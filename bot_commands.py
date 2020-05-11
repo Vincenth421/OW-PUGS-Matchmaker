@@ -68,7 +68,7 @@ def split(playerData):
     return [select(tank), select(dps), select(supp)]
 
 # selects 4 players from a pool of any number
-# role comes in as a list, returns a list of the randomly selected players
+# role comes in as a list, returns a list of the randomly selected players 
 def select(role):
     # print(len(role))
     selected = []
