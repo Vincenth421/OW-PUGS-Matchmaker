@@ -73,14 +73,14 @@ def select(role):
     # print(len(role))
     selected = []
     already_played = []
-	  for i in role:
+    for i in role:
         if i['team'] == -1:
-			  selected.append(i)
-			  if len(selected) == 4:
-				    return selected
-		    else:
-			      already_played.append(i)
-	  nums = np.random.choice(len(already_played), 4-len(selected), replace=False)
+            selected.append(i)
+            if len(selected) == 4:
+                return selected
+            else:
+                already_played.append(i)
+        nums = np.random.choice(len(already_played), 4-len(selected), replace=False)
     for i in range(len(nums)):
         selected.append(already_played[i])
     return selected
