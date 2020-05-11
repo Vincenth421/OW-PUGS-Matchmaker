@@ -120,7 +120,7 @@ def balance(role):
 
 # combines the different roles into a team
 # average sr is first element in both team A and team B
-# good work team
+# good work team 
 def combine(playerData, tank, dps, supp):
     dReverse = False
     sReverse = False
