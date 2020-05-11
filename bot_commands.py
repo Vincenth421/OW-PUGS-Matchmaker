@@ -68,19 +68,19 @@ def split(playerData):
     return [select(tank), select(dps), select(supp)]
 
 # selects 4 players from a pool of any number
-# role comes in as a list, returns a list of the randomly selected players 
+# role comes in as a list, returns a list of the randomly selected players
 def select(role):
     # print(len(role))
     selected = []
     already_played = []
-	for i in role:
-		if i['team'] == -1:
-			selected.append(i)
-			if len(selected) == 4:
-				return selected
-		else:
-			already_played.append(i)
-	nums = np.random.choice(len(already_played), 4-len(selected), replace=False)
+	  for i in role:
+        if i['team'] == -1:
+			  selected.append(i)
+			  if len(selected) == 4:
+				    return selected
+		    else:
+			      already_played.append(i)
+	  nums = np.random.choice(len(already_played), 4-len(selected), replace=False)
     for i in range(len(nums)):
         selected.append(already_played[i])
     return selected
