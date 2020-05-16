@@ -1,0 +1,104 @@
+{
+    "Archangel#0346": {
+        "support": 3200,
+        "queue": "none",
+        "team": -1,
+        "tank": 2500,
+        "dps": 2250
+    },
+    "Immortis#6644": {
+        "queue": "none",
+        "team": -1,
+        "tank": 3300,
+        "support": 2400,
+        "dps": 2500
+    },
+    "Twang#8757": {
+        "tank": 4300,
+        "queue": "none",
+        "team": -1,
+        "dps": 3700,
+        "support": 3500
+    },
+    "Timmy#3426": {
+        "dps": 3950,
+        "queue": "none",
+        "team": -1
+    },
+    "TheGlare#1451": {
+        "tank": 3300,
+        "queue": "none",
+        "team": -1,
+        "support": 2800,
+        "dps": 2800
+    },
+    "Scrub#1337": {
+        "tank": 3500,
+        "queue": "none",
+        "team": -1
+    },
+    "Daniel9dsi#7793": {
+        "support": 3200,
+        "queue": "none",
+        "team": -1,
+        "tank": 3500,
+        "dps": 3000
+    },
+    "neumann147#1880": {
+        "support": 3100,
+        "queue": "none",
+        "team": -1,
+        "tank": 2500,
+        "dps": 2000
+    },
+    "airyqe#5154": {
+        "dps": 4200,
+        "queue": "none",
+        "team": -1,
+        "support": 3750,
+        "tank": 3750
+    },
+    "BubbLeS#4835": {
+        "dps": 3600,
+        "queue": "none",
+        "team": -1,
+        "tank": 3500,
+        "support": 3600
+    },
+    "Duncanator02#5596": {
+        "support": 2200,
+        "queue": "none",
+        "team": -1,
+        "tank": 2200,
+        "dps": 2000
+    },
+    "MusicalDuck#0138": {
+        "support": 3300,
+        "queue": "none",
+        "team": -1,
+        "tank": 2800,
+        "dps": 2700
+    },
+    "Aries#6666": {
+        "support": 3900,
+        "queue": "none",
+        "team": -1
+    },
+    "Panda#3239": {
+        "support": 3919,
+        "queue": "none",
+        "team": -1,
+        "tank": 3600,
+        "dps": 3100
+    },
+    "Deal#0911": {
+        "tank": 3800,
+        "queue": "none",
+        "team": -1
+    },
+    "Nick2k#1111": {
+        "dps": 4494,
+        "queue": "none",
+        "team": -1
+    }
+}
