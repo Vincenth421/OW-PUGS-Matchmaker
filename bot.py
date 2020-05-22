@@ -10,12 +10,10 @@ client = commands.Bot(command_prefix = ".")
 
 @client.event
 async def on_ready():
+        ''' Prints a message when the bot is ready.
+        '''
         loadPlayerData()
         print("bot is ready")
-        # channel = client.get_channel(708912394537009152)
-        # command testing channel
-        # await channel.send("I'm getting bullied so y'all gotta do draft.")
-        # print(clearPlayerData())
 
 
 ##@client.event
@@ -28,15 +26,23 @@ async def on_ready():
 
 @client.command(aliases=["mtt"])
 async def move_to_teams(ctx):
-        draft_channel = client.get_channel(709248862828888074)
-        channel1 = client.get_channel(707749575108198441)
-        channel2 = client.get_channel(707749630728732712)
+        ''' Moves people on teams to the specific team channel from the draft
+                channel.
+        '''
+        ## ## MatchMaking Bot Testing channel IDs
+        ##draft_channel = client.get_channel(709248862828888074)
+        ##channel1 = client.get_channel(707749575108198441)
+        ##channel2 = client.get_channel(707749630728732712)
+
+        ## ## We Use this channel IDs
+        draft_channel = client.get_channel(652717496045928458)
+        channel1 = client.get_channel(647667378334990377)
+        channel2 = client.get_channel(647667443782909955)
+        
         pdata = loadPlayerData()
         team1 = get_t1_id(pdata)
         team2 = get_t2_id(pdata)
         sender = ctx.message.author
-        #print(type(sender))
-        #await sender.move_to(channel2)
         num_moved = 0
         for member in ctx.message.guild.members:
                 if member.id in team1:
@@ -51,10 +57,12 @@ async def move_to_teams(ctx):
 
 @client.command(aliases=["mtd"])
 async def move_to_draft(ctx):
+        ''' Moves all users from the team channels to the draft channel.
+        '''
         ## ## MatchMaking Bot Testing channel IDs
-        #draft_channel = client.get_channel(709248862828888074)
-        #channel1 = client.get_channel(707749575108198441)
-        #channel2 = client.get_channel(707749630728732712)
+        ##draft_channel = client.get_channel(709248862828888074)
+        ##channel1 = client.get_channel(707749575108198441)
+        ##channel2 = client.get_channel(707749630728732712)
 
         ## ## We Use this channel IDs
         draft_channel = client.get_channel(652717496045928458)
@@ -72,11 +80,15 @@ async def move_to_draft(ctx):
 
 @client.command()
 async def ping(ctx):
-    await ctx.send("MatchMaker Bot's Ping: {0}".format(round(client.latency, 2)))
+        ''' Returns the bot's ping.
+        '''
+        await ctx.send("MatchMaker Bot's Ping: {0}".format(round(client.latency, 2)))
 
 
 @client.command()
 async def team(ctx):
+        ''' Reminds the sender what team they're on.
+        '''
         sender = str(ctx.message.author)
         team = getPlayerTeam(sender)
         if team == "-1":
@@ -89,16 +101,23 @@ async def team(ctx):
 
 @client.command(aliases=["randomMap", "randommap"])
 async def map(ctx):
+        ''' Sends a random map.
+        '''
         await ctx.send(randomMap())
 
 
 @client.command()
 async def mention(ctx):
+        ''' Mentions whoever used the command.
+        '''
         await ctx.send(ctx.message.author.mention)
 
 
 @client.command(aliases = ["dick", "size"])
 async def dicksize(ctx):
+        ''' Randomly assigns a number in inches, specific users have earned a
+                modifier.
+        '''
         i = random.randint(300, 1200)
         if str(ctx.message.author) == "Panda#3239":
                 i += 800
@@ -114,6 +133,8 @@ async def dicksize(ctx):
 
 @client.command(aliases=["bi", "pan"])
 async def gay(ctx):
+        ''' Randomly assigns the user a sexuality. Not always random.
+        '''
         i = random.randint(0,89)
         if str(ctx.message.author) == "Aries#666":
                 await ctx.send(ctx.message.author.mention + " ain't sexy at all.")
@@ -156,23 +177,35 @@ async def gay(ctx):
 
 @client.command()
 async def commands(ctx):
-        string1 = "To input your SR, please use the following commands:\n.tank <SR>"
-        string2 = "\n.dps <SR>\n.support <SR>\n\nTo see your SR, use .sr\n"
-        string3 = "To queue for a role, use .q <role>\nTo see the current queue, use .q"
-        string3_5 = "\nTo see the roles needed to make a match, use .roles"
-        string4 = "\n\nTo begin matchmaking, use .mm\n\nTo report the winning team, "
-        string5 = "use .win <1/2>\nIn case of a tie, use .win 0"
-        await ctx.send(string1 + string2 + string3 + string3_5
-                       + string4 + string5)
+        ''' Prints working commands.
+        '''
+        string1 = """To input your SR, please use the following commands:
+        .tank <SR>\n.dps <SR>\n.support <SR>
+        \nTo see your SR, use .sr
+        \nTo queue for a role, use .q <role>\nTo see the current queue, use .q
+        \nTo see what you are queued for, use .status
+        \nTo see the roles needed to make a match, use .roles
+        \nTo begin matchmaking, use .mm
+        \nTo report the winning team, use.win <1/2>
+        \nIn case of a tie, use .win 0"""
+        """
+        \nTo move users to team channels after matchmaking, use .mtt
+        \nTo move users from team channels back to draft, use .mtd
+        """
+        await ctx.send(string1)
 
         
 @client.command(aliases=["matchmake"])
 async def mm(ctx):
+        ''' Makes a match based on users queued. If not enough players are queued
+                prints an error message.
+        '''
         mylist = getAllPlayerData()
         matchList = matchmake(mylist)
         if matchList[0] != -1:
                 await ctx.send(printTeams(matchList))
                 savePlayerData(matchList[0])
+                await ctx.send(randomMap())
         else:
                 await ctx.send("Error encountered. Are enough players queued?")
         
@@ -180,6 +213,8 @@ async def mm(ctx):
 
 @client.command(aliases=["w"])
 async def win(ctx):
+        ''' Calls adjust to add or subtract player SR.
+        '''
         adjust(int(ctx.message.content[-1:]))
         if ctx.message.content[-1:] != "0":
                 await ctx.send("Congrats Team " + ctx.message.content[-1:])
@@ -189,18 +224,10 @@ async def win(ctx):
         clearQueue()
 
 
-##@client.command(aliases=["testmatchmake"])
-##async def testmm(ctx):
-##        mylist = matchmakeData()
-##        matchList = matchmake(mylist)
-##        if matchList == -1:
-##                await ctx.send("Not enough players queued.")
-##        else:
-##                await ctx.send(printTeams(matchList))
-
-
 @client.command(aliases=["support", "supp", "tank", "damage", "dps"])
 async def update(ctx):
+        ''' Updates the dictionary of player data with the new data.
+        '''
         mystr = ctx.message.content
         sender = str(ctx.message.author)
         discord_id = ctx.message.author.id
@@ -212,6 +239,9 @@ async def update(ctx):
 
 @client.command(aliases=["q"])
 async def queue(ctx, role="none"):
+        ''' If no args passed, prints the queue. Else it updates the sender's data
+                to place them in the queue for what role they want.
+        '''
         if role == "none":
                 await ctx.send(ctx.message.author.mention + "\n" + printQueue())
         else:
@@ -230,6 +260,8 @@ async def queue(ctx, role="none"):
 
 @client.command(aliases=["role"])
 async def roles(ctx):
+        ''' Prints out the roles needed to matchmake.
+        '''
         message = "Roles Needed:\n"
         if tankQueued() != 0:
                 message = message + (tankQueued() + " tanks.\n")
@@ -244,6 +276,8 @@ async def roles(ctx):
         
 @client.command(aliases=["l"])
 async def leave(ctx):
+        ''' Leaves the queue.
+        '''
         sender = str(ctx.message.author)
         message = deQueue(sender)
         message = message + "Roles Needed:\n"
@@ -260,6 +294,8 @@ async def leave(ctx):
 
 @client.command(aliases=["SR"])
 async def sr(ctx):
+        ''' Prints out the player's saved SR values.
+        '''
         try:
                 sender = str(ctx.message.author)
                 sr = printPlayerData(sender)
@@ -270,6 +306,8 @@ async def sr(ctx):
 
 @client.command()
 async def status(ctx):
+        ''' Prints what the user is queued for.
+        '''
         sender = str(ctx.message.author)
         sr = printQueueData(sender)
         await ctx.send(ctx.message.author.mention + sr)
@@ -277,6 +315,8 @@ async def status(ctx):
 
 @client.command(aliases=["allsr"])
 async def allSR(ctx):
+        ''' Prints out all the saved SR data.
+        '''
         try:
                 sr = printAllPlayerData()
                 await ctx.send(sr)
@@ -286,12 +326,16 @@ async def allSR(ctx):
 
 @client.command()
 async def clear(ctx, amount=5):
+        ''' Removes a specified amount of messages.
+        '''
         if amount > 0:
                 await ctx.channel.purge(limit=amount+1)
 
 
 @client.command(aliases=["coin"])
 async def flip(ctx):
+        ''' Flips a coin.
+        '''
         result = random.randint(0,1)
         if result == 0:
                 await ctx.send("Heads!")
