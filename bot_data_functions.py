@@ -19,18 +19,23 @@ def loadPlayerData():
 
 
 playerData = loadPlayerData()
+numQueued = {"tank":0, "dps":0, "support":0}
+
 for player in playerData:
     playerData[player]["queue"] = "none"
     playerData[player]["team"] = -1
 
 def clearQueue():
+    global numQueued
     for player in playerData:
         playerData[player]["queue"] = "none"
     savePlayerData(playerData)
-clearQueue()
+    for role in numQueued:
+        numQueued[role] = 0
+    return numQueued
+    
 
-
-numQueued = {"tank":0, "dps":0, "support":0}
+numQueued = clearQueue()
 
 
 def queueFor(role, PlayerID):
@@ -38,6 +43,7 @@ def queueFor(role, PlayerID):
         Sets the player's queued role to whatever they specified.
         Updates number of players queued for each role.
     '''
+    global numQueued
     deQueue(PlayerID)
     if role in playerData[PlayerID]:
         playerData[PlayerID]["queue"] = role
@@ -48,7 +54,7 @@ def queueFor(role, PlayerID):
         elif role == "damage" or role == "dps":
             numQueued["dps"] += 1
             return ("Queued for dps.\n")
-        elif role == "support":
+        elif role == "support" or role == "supp":
             numQueued["support"] += 1
             return ("Queued for support.\n")
         elif role == "none":
@@ -82,23 +88,37 @@ def tankQueued():
 # winner must be either 0, 1, or 2
 # playerData is a hashtable of all players
 def adjust(winner):
+    global playerData
     playerData = loadPlayerData()
-    
-    if(winner == 0):
-        return playerData
-    
-    for player in playerData.keys():
-        if(playerData[player]['team'] == winner):
-            role = playerData[player]['queue']
-            playerData[player][role] += 100
-        elif(playerData[player]['team'] != -1):
-            role = playerData[player]['queue']
-            playerData[player][role] -= 100
-        playerData[player]['team'] = -1
-        playerData[player]['queue'] = 'none'
 
-    savePlayerData(playerData)
-    return playerData
+    if(winner != 0):
+        for player in playerData:
+            playerData = loadPlayerData()
+            if(playerData[player]["team"] == winner):
+                role = playerData[player]["queue"]
+                playerData[player][role] += 100
+##                if role == "tank":
+##                    playerData[player]["tank"] += 100
+##                elif role == "dps":
+##                    playerData[player]["dps"] += 100
+##                elif role == "support":
+##                    playerData[player]["support"] += 100
+            elif(playerData[player]["team"] != -1):
+                role = playerData[player]["queue"]
+                playerData[player][role] -= 100
+##                if role == "tank":
+##                    playerData[player]["tank"] -= 100
+##                elif role == "dps":
+##                    playerData[player]["dps"] -= 100
+##                elif role == "support":
+##                    playerData[player]["support"] -= 100
+            playerData[player]["team"] = -1
+            playerData[player]["queue"] = "none"
+            savePlayerData(playerData)
+    clearQueue()
+
+    #savePlayerData(playerData)
+    #return playerData
 
 
 def dpsQueued():
@@ -127,6 +147,7 @@ def deQueue(PlayerID):
     ''' Removes the player from the queue.
         Updates number of players queued for each role.
     '''
+    global numQueued
     role = playerData[PlayerID]["queue"]
     playerData[PlayerID]["queue"] = "none"
     if role == "tank":
@@ -141,7 +162,7 @@ def deQueue(PlayerID):
 
     
 #good work gang
-def updatePlayerData(mystr, PlayerID):
+def updatePlayerData(mystr, PlayerID, discord_id):
     ''' Updates the hashmap of PlayerID's data.
     '''
     userData = mystr.split()
@@ -161,6 +182,8 @@ def updatePlayerData(mystr, PlayerID):
         playerData[PlayerID]["tank"] = sr
     playerData[PlayerID]["queue"] = "none"
     playerData[PlayerID]["team"] = -1
+    if "id" not in playerData[PlayerID].keys():
+        playerData[PlayerID]["id"] = discord_id
     # print(playerData)
     savePlayerData(playerData)
     return True
@@ -203,6 +226,7 @@ def printPlayerData(PlayerID):
 def printAllPlayerData():
     ''' Returns a formatted string with all user data.
     '''
+    playerData = loadPlayerData()
     message = ""
     for PlayerID in playerData.keys():
         message = message + printPlayerData(PlayerID) + "\n\n"
@@ -268,23 +292,29 @@ def printTeams(mmList):
     mmData = mmList[0]
     team1 = getTeam1(mmData)
     team2 = getTeam2(mmData)
-    teamA = "Team 1: Avg = " + str(mmList[1]) + "\n"
+    teamA = "```Team 1: Avg = " + str(mmList[1]) + "\n"
     teamB = "Team 2: Avg = " + str(mmList[2]) + "\n"
     for player in team1.keys():
-        if mmData[player]["queue"] == "support":
-            teamA = teamA + mmData[player]["queue"] + "\t\t\t"
-        else:
-            teamA = teamA + mmData[player]["queue"] + "\t\t\t\t"
         teamA = teamA + player
+        if mmData[player]["queue"] == "support":
+            teamA = teamA + (" " * (32-len(player))) + mmData[player]["queue"]
+        elif mmData[player]["queue"] == "dps":
+            teamA = teamA + (" " * (32-len(player)))+ mmData[player]["queue"]
+        else:
+            teamA = teamA + (" " * (32-len(player)))+ mmData[player]["queue"]
+        
         teamA = teamA + "\n"
     for player in team2.keys():
-        if mmData[player]["queue"] == "support":
-            teamB = teamB + mmData[player]["queue"] + "\t\t\t"
-        else:
-            teamB = teamB + mmData[player]["queue"] + "\t\t\t\t"
         teamB = teamB + player
+        if mmData[player]["queue"] == "support":
+            teamB = teamB + (" " * (32-len(player))) + mmData[player]["queue"]
+        elif mmData[player]["queue"] == "dps":
+            teamB = teamB + (" " * (32-len(player))) + mmData[player]["queue"]
+        else:
+            teamB = teamB + (" " * (32-len(player)))+ mmData[player]["queue"]
+        
         teamB = teamB + "\n"
-    message = "\n" + teamA + "\n" + teamB
+    message = "\n" + (teamA) + "\n" + (teamB) + "```"
     return message
 
 
@@ -293,3 +323,18 @@ def getPlayerTeam(playerID):
     team = str(playerData[playerID]["team"])
     return team
 
+
+def get_t1_id(playerData):
+    team1 = []
+    for player in playerData.keys():
+        if playerData[player]["team"] == 1:
+            team1.append(playerData[player]["id"])
+    return team1
+
+
+def get_t2_id(playerData):
+    team2 = []
+    for player in playerData.keys():
+        if playerData[player]["team"] == 2:
+            team2.append(playerData[player]["id"])
+    return team2
