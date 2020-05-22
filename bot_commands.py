@@ -34,7 +34,7 @@ def matchmake(playerData):
         if playerData[i]['queue'] != 'none':
             queued += 1
     if queued < 12:
-        return -1
+        return [-1, -1]
     
     roles = split(playerData)
     
@@ -72,17 +72,9 @@ def split(playerData):
 def select(role):
     # print(len(role))
     selected = []
-    already_played = []
-    for i in role:
-        if i['team'] == -1:
-            selected.append(i)
-            if len(selected) == 4:
-                return selected
-        else:
-            already_played.append(i)
-    nums = np.random.choice(len(already_played), 4-len(selected), replace=False)
+    nums = np.random.choice(len(role), 4, replace=False)
     for i in range(len(nums)):
-        selected.append(already_played[i])
+        selected.append(role[i])
     return selected
 
 # given a role hash table
@@ -120,7 +112,7 @@ def balance(role):
 
 # combines the different roles into a team
 # average sr is first element in both team A and team B
-# good work team 
+# good work team
 def combine(playerData, tank, dps, supp):
     dReverse = False
     sReverse = False
