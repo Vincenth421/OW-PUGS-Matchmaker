@@ -25,6 +25,7 @@ for player in playerData:
     playerData[player]["queue"] = "none"
     playerData[player]["team"] = -1
 
+
 def clearQueue():
     ''' Clears the number of players queued and empties the queue.
     '''
@@ -97,10 +98,10 @@ def adjust(winner):
             playerData = loadPlayerData()
             if(playerData[player]["team"] == winner):
                 role = playerData[player]["queue"]
-                playerData[player][role] += 100
+                playerData[player][role] += 50
             elif(playerData[player]["team"] != -1):
                 role = playerData[player]["queue"]
-                playerData[player][role] -= 100
+                playerData[player][role] -= 50
             playerData[player]["team"] = -1
             playerData[player]["queue"] = "none"
             savePlayerData(playerData)
