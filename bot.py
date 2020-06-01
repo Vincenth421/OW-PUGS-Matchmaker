@@ -460,4 +460,4 @@ async def flip(ctx):
                 await ctx.send("Tails!")
 
 
-client.run("NzA3NzI0OTUzMzUyNTM2MTU2.XtMTXQ.ibFU_ubrKjpxi4LTKMnLnDeka2w")
+client.run("token")
