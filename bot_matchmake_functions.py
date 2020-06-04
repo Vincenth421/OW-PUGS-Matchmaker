@@ -70,17 +70,17 @@ def split(playerData):
                      
     if len(tank) > 4:
         nums = np.random.choice(len(tank), len(tank)-4, replace=False)
-        for i in len(nums):
+        for i in range(len(nums)):
             tank.remove(tank[i])
                 
     if len(dps) > 4:
         nums = np.random.choice(len(dps), len(dps)-4, replace=False)
-        for i in len(nums):
+        for i in range(len(nums)):
             dps.remove(dps[i])
             
     if len(supp) > 4:
         nums = np.random.choice(len(supp), len(supp)-4, replace=False)
-        for i in len(nums):
+        for i in range(len(nums)):
             supp.remove(supp[i])
 
     return [select(tank), select(dps), select(supp)]
