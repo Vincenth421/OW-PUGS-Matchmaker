@@ -25,13 +25,13 @@ def matchmake(playerData):
 def singlerole(queued, tank, dps, supp, filled):
     for names in queued.keys():
         roles = queued[names]["queue"]
-        if roles == 100:
+        if roles == "100":
             tank += 1
             filled[names] = queued[names]
-        elif roles == 10:
+        elif roles == "010":
             dps += 1
             filled[names] = queued[names]
-        elif roles == 1:
+        elif roles == "001":
             supp += 1
             filled[names] = queued[names]
 
