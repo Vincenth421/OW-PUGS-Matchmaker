@@ -29,16 +29,14 @@ mapList = ['Blizzard World', 'Busan', 'Dorado',
 # main matchmaking function
 # chooses 12 players, splits into roles, matchmakes roles, and then combines them back together
 def matchmake(playerData):
-    selected = {}
-    # adds all players in queue
+    queued = 0
     for i in playerData.keys():
         if playerData[i]['queue'] != 'none':
-            selected[i] = playerData[i]
-    # if less than 12, return error
-    if len(selected) < 12:
+            queued += 1
+    if queued < 12:
         return [-1, -1]
     
-    roles = split(selected)
+    roles = split(playerData)
     
     tank = roles[0]
     dps = roles[1]
@@ -52,13 +50,12 @@ def matchmake(playerData):
 
 # ready is a bool
 # playerData is a hash table of any number of people
-# queued is number of players queued
 # splits all players into their chosen roles, then selects 4 for each role
 def split(playerData):
     tank = []
     dps = []
-    supp = []   
-           
+    supp = []
+    
     for name in playerData.keys():
         role = playerData[name]['queue']
         if role == 'tank':
@@ -67,21 +64,6 @@ def split(playerData):
             dps.append([name, playerData[name]['dps']])
         elif role == 'support':
             supp.append([name, playerData[name]['support']])
-                     
-    if len(tank) > 4:
-        nums = np.random.choice(len(tank), len(tank)-4, replace=False)
-        for i in range(len(nums)):
-            tank.remove(tank[i])
-                
-    if len(dps) > 4:
-        nums = np.random.choice(len(dps), len(dps)-4, replace=False)
-        for i in range(len(nums)):
-            dps.remove(dps[i])
-            
-    if len(supp) > 4:
-        nums = np.random.choice(len(supp), len(supp)-4, replace=False)
-        for i in range(len(nums)):
-            supp.remove(supp[i])
 
     return [select(tank), select(dps), select(supp)]
 
@@ -211,10 +193,7 @@ def main():
 'usr9':   {'dps': 3817, 'support': 2766, 'tank': 3894, 'queue': 'dps', 'team': -1},
 'usr10':  {'dps': 2254, 'support': 2285, 'tank': 3639, 'queue': 'dps', 'team': -1},
 'usr11':  {'dps': 1776, 'support': 1502, 'tank': 3808, 'queue': 'dps', 'team': -1},
-'usr12':  {'dps': 1776, 'support': 3902, 'tank': 2488, 'queue': 'dps', 'team': -1},
-'usr13':  {'dps': 1276, 'support': 3902, 'tank': 2488, 'queue': 'dps', 'team': -1},
-'usr14':  {'dps': 1776, 'support': 3202, 'tank': 2488, 'queue': 'support', 'team': -1},
-'usr15':  {'dps': 1776, 'support': 3902, 'tank': 2388, 'queue': 'tank', 'team': -1},
+'usr12':  {'dps': 1776, 'support': 3902, 'tank': 2488, 'queue': 'dps', 'team': -1}
 }
 
     print(matchmake(allPlayerData))
