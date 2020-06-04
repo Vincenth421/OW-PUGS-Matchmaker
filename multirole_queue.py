@@ -8,7 +8,7 @@ def matchmake(playerData):
     queued = {}
     for names in playerData.keys():
         roles = playerData[names]["queue"]
-        if roles != 0
+        if roles != "000"
             queued[names] = playerData[names]
     if queued < 12:
         #TODO: return error
