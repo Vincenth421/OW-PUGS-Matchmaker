@@ -2,7 +2,7 @@ import discord
 import random
 from discord.ext import commands
 from bot_data_functions import *
-from bot_commands import *
+from bot_matchmake_functions import *
 from discord import ChannelType
 import asyncio
 import datetime
