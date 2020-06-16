@@ -116,6 +116,51 @@ def splitRoles(queued, keys, tree):
         splitRoles[keys[1:], tree.getRight())
     return tree
     
+# PSEUDOCODE BELOW:                   
+def valid_queued_teams(queued):
+    # Need >= 12 people queued
+    num_tanks = 0
+    num_dps = 0
+    num_supp = 0
+    singled_queued = {}
+    result = []
+
+    result = singlerole(queued, num_tanks, num_dps, num_supp, singled_queued)
+    #singlerole returns [queued, filled]
+    result[0] = queued
+    result[1] = singled_queued
+
+    #count all single queued people
+    for role in singled_queued:
+        if role == tank:
+            num_tanks = num_tanks + 1
+        if role == dps:
+            num_dps = num_dps + 1
+        if role == supp:
+            num_supp = num_supp + 1
+
+    #count all double queued people
+    for role in queued:
+        if role == tank-supp:
+            num_tanks = num_tanks + 0.5
+            num_supp = num_supp + 0.5
+        if role == tank-dps:
+            num_tanks = num_tanks + 0.5
+            num_dps = num_dps + 0.5
+        if role == supp-dps:
+            num_supp = num_supp + 0.5
+            num_dps = num_dps + 0.5
+        if role == fill:
+            num_tanks = num_tanks + 0.34
+            num_supp = num_supp + 0.34
+            num_dps = num_dps + 0.34
+
+    if num_tanks >= 4 and num_dps >= 4 and num_supp >= 4:
+        return(1)
+    else:
+        return(0)
+    
+                   
 def main():
     allPlayerData = {
 'usr1':   {'dps': 3944, 'support': 1698, 'tank': 3682, 'queue': 'support', 'team': -1},
@@ -131,3 +176,5 @@ def main():
 'usr11':  {'dps': 1776, 'support': 1502, 'tank': 3808, 'queue': 'dps', 'team': -1},
 'usr12':  {'dps': 1776, 'support': 3902, 'tank': 2488, 'queue': 'dps', 'team': -1}
 }
+                   
+                   
