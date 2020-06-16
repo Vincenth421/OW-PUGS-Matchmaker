@@ -56,6 +56,10 @@ def matchmake(playerData):
     keys = finished[0].keys()
     split(finished[0], keys, head)
 
+    #head now has tree of all possible permutations of player roles
+    #now just need to make teams from all paths in the tree
+    #and find which one is the most balanced out of all of them
+    
     return 1
 
 # finds all single role players, and if a role filled, goes again
@@ -72,49 +76,95 @@ def singlerole(queued, tank, dps, supp, filled):
             supp += 1
             filled[names] = queued[names]
 
+    # check if 4 tanks single roling
     if tank == 4:
-        #TODO change first digit to 0
         for names in queued.keys():
-            #queued[names]["queue"] -= 100
-        return singlerole(queued, 0, dps, supp, filled)
+            queued[names]["queue"] = "0" + queued[names]["queue"][1:]
+        return singlerole(queued, -1, dps, supp, filled)
 
+    # check if there are exactly enough multirole players as is remaining tank players
+    elif tank >= 0:
+        num = 0
+        temp = {}
+        for names in queued.keys():
+            if queued[names]["queue"][0] == "1":
+                temp[names] = queued[names]
+                temp[names]["queue"] = "100"
+                num += 1
+        if num == (4-tank):
+            for names in temp.keys():
+                filled[names] = temp[names]
+            return singlerole(queued, -1, dps, supp, filled)
+
+    # check if 4 dps are single roling
     elif dps == 4:
-        #TODO: change second digit to 0
         for names in queued.keys():
-            #queued[names]["queue"] -= 10
-        return singlerole(queued, tank, 0, supp, filled)
+            queued[names]["queue"] = queued[names]["queue"][:1] + "0" + queued[names]["queue"][2:]
+        return singlerole(queued, tank, -1, supp, filled)
 
-    elif supp == 4:
-        # TODO: change third digit to 0
+    # check if there are exactly enough multirole players as is remaining dps players
+    elif dps >= 0:
+        num = 0
+        temp = {}
         for names in queued.keys():
-            #queued[names]["queue"] -= 1
-        return singlerole(queued, tank, dps, 0, filled)
+            if queued[names]["queue"][1] == "1":
+                temp[names] = queued[names]
+                temp[names]["queue"] = "010"
+                num += 1
+        if num == (4-dps):
+            for names in temp.keys():
+                filled[names] = temp[names]
+            return singlerole(queued, tank, -1, supp, filled)
+
+    # check if 4 supp are single roling
+    elif supp == 4:
+        for names in queued.keys():
+            queued[names]["queue"] = queued[names]["queue"][:2] + "0"
+        return singlerole(queued, tank, dps, -1, filled)
+
+    # check if there are exactly enough multirole players as is remaining supp players
+    elif supp >= 0:
+        num = 0
+        temp = {}
+        for names in queued.keys():
+            if queued[names]["queue"][2] == "1":
+                temp[names] = queued[names]
+                temp[names]["queue"] = "001"
+                num += 1
+        if num == (4-supp):
+            for names in temp.keys():
+                filled[names] = temp[names]
+            return singlerole(queued, tank, dps, -1, filled)
 
     # Finished adding all single role players
     else:
         return [queued, filled]
 
+#TODO: might need to return head pointer instead of nothing, not sure
 def splitRoles(queued, keys, tree):
     if len(keys) == 0
-        return tree
+        return
     key = keys[0]
     roles = queued[key]["queue"]
-    if #first digit is 1:
+    # if is queued for tank, then single it out and add it to tree
+    if roles[0] == "1":
         tank = queued[key]
         tank["queue"] = "100"
         tree.setLeft(tank)
-        splitRoles[keys[1:], tree.getLeft())
-    if #second digit is 1:
+        splitRoles(queued, keys[1:], tree.getLeft())
+    # if is queued for dps, then single it out and add it to tree
+    if roles[1] == "1":
         dps = queued[key]
         dps["queue"] = "010"
         tree.setMiddle(dps)
-        splitRoles[keys[1:], tree.getMiddle())
-    if #third digit is 1:
+        splitRoles(queued, keys[1:], tree.getMiddle())
+    # if is queued for supp, then single it out and add it to tree
+    if roles[2] == "1":
         supp = queued[key]
         supp["queue"] = "001"
         tree.setRight(supp)
-        splitRoles[keys[1:], tree.getRight())
-    return tree
+        splitRoles(queued, keys[1:], tree.getRight())
+    return
     
 # PSEUDOCODE BELOW:                   
 def valid_queued_teams(queued):
