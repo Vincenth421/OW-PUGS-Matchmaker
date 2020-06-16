@@ -167,7 +167,7 @@ def splitRoles(queued, keys, tree):
     return
     
 # PSEUDOCODE BELOW:                   
-def valid_queued_teams(queued):
+def valid_queued_players(queued):
     # Need >= 12 people queued
     num_tanks = 0
     num_dps = 0
@@ -189,6 +189,15 @@ def valid_queued_teams(queued):
         if role == supp:
             num_supp = num_supp + 1
 
+    for roles in queued:
+        if role == tank-dps or tank-supp or dps-supp:
+            num_doubles = num_doubles + 1
+        if role == fill:
+            num_fills = num_fills + 1
+    
+    if num_fills > num_doubles:
+        return 1
+
     #count all double queued people
     for role in queued:
         if role == tank-supp:
@@ -205,10 +214,12 @@ def valid_queued_teams(queued):
             num_supp = num_supp + 0.34
             num_dps = num_dps + 0.34
 
+
     if num_tanks >= 4 and num_dps >= 4 and num_supp >= 4:
         return(1)
     else:
         return(0)
+    
     
                    
 def main():
