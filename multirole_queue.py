@@ -66,6 +66,7 @@ def matchmake(playerData):
 def singlerole(queued, tank, dps, supp, filled):
     for names in queued.keys():
         roles = queued[names]["queue"]
+        #TODO: once confirmed for a role, remove from queued
         if roles == "100":
             tank += 1
             filled[names] = queued[names]
