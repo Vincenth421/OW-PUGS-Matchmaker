@@ -1,6 +1,8 @@
 import numpy as np
 import json
 import random
+import requests
+from bs4 import BeautifulSoup
 
 
 def savePlayerData(playerData):
@@ -24,7 +26,7 @@ numQueued = {"tank":0, "dps":0, "support":0}
 for player in playerData:
     playerData[player]["queue"] = "none"
     playerData[player]["team"] = -1
-
+savePlayerData(playerData)
 
 def clearQueue():
     ''' Clears the number of players queued and empties the queue.
@@ -46,9 +48,11 @@ def queueFor(role, PlayerID):
         Sets the player's queued role to whatever they specified.
         Updates number of players queued for each role.
     '''
+    if PlayerID not in playerData.keys():
+        return("You don't have any stored data.\n")
     global numQueued
-    deQueue(PlayerID)
     if role in playerData[PlayerID]:
+        deQueue(PlayerID)
         playerData[PlayerID]["queue"] = role
         savePlayerData(playerData)
         if role == "tank":
@@ -145,35 +149,121 @@ def deQueue(PlayerID):
         numQueued["support"] -= 1
     elif role == "none":
         return "Not in queue.\n"
+    savePlayerData(playerData)
     return "Left the queue.\n"
 
 
-#good work gang
-def updatePlayerData(mystr, PlayerID, discord_id):
-    ''' Updates the hashmap of PlayerID's data.
-    '''
-    userData = mystr.split()
-    role = userData[0][1:]
-    if userData[1].isalpha():
+def webScrape(battletag):
+    link = "https://playoverwatch.com/en-us/career/pc/"
+    page = requests.get(link + battletag.replace("#", "-"))
+
+    soup = BeautifulSoup(page.text, "html.parser")
+    
+    ranks = soup.find_all(class_='competitive-rank-role')
+    tank = dps = supp = -1
+
+    for i in range(len(ranks)):
+        rank_role = ranks[i].find(class_= 'competitive-rank-role-icon')
+        role_sr = ranks[i].find(class_='competitive-rank-level').text
+        if "tank" in str(rank_role):
+            tank = int(role_sr)
+        elif "offense" in str(rank_role):
+            dps = int(role_sr)
+        elif "support" in str(rank_role):
+            supp = int(role_sr)
+    return [tank, dps, supp]
+
+
+def setBtag(btag, PlayerID, discord_id):
+    """ Updates the player's battletag.
+    """
+    try:
+        if PlayerID not in playerData:
+            playerData[PlayerID] = {}
+        playerData[PlayerID]["btag"] = btag
+        savePlayerData(playerData)
+        return True
+    except:
         return False
-    sr = int(userData[1])
-    if sr < 0 or sr > 5000:
+
+
+def pullSR(PlayerID, discord_id):
+    """ Updates the player's SR from their online profile.
+    """
+    try:
+        battletag = playerData[PlayerID]["btag"]
+        sr_list = webScrape(battletag)
+        if sr_list == [-1, -1, -1]:
+            return False
+        if sr_list[0] != -1:
+            setTank(sr_list[0], PlayerID, discord_id)
+        if sr_list[1] != -1:
+            setDamage(sr_list[1], PlayerID, discord_id)
+        if sr_list[2] != -1:
+            setSupport(sr_list[2], PlayerID, discord_id)
+        return True
+    except:
         return False
+
+
+def setSupport(sr, PlayerID, discord_id):
+    """ Updates the player's support SR.
+    """
     if PlayerID not in playerData:
         playerData[PlayerID] = {}
-    if(role == "support" or role == "supp"):
+    sr = int(sr)
+    if sr <= 1000 or sr > 5000:
+        return False
+    try:
         playerData[PlayerID]["support"] = sr
-    elif(role == "damage" or role == "dps"):
+        playerData[PlayerID]["queue"] = "none"
+        playerData[PlayerID]["team"] = -1
+        if "id" not in playerData[PlayerID].keys():
+            playerData[PlayerID]["id"] = discord_id
+        savePlayerData(playerData)
+        return True
+    except:
+        return False
+
+
+def setDamage(sr, PlayerID, discord_id):
+    """ Updates the player's support SR.
+    """
+    if PlayerID not in playerData:
+        playerData[PlayerID] = {}
+    sr = int(sr)
+    if sr < 1000 or sr > 5000:
+        return False
+    try:
         playerData[PlayerID]["dps"] = sr
-    elif(role == "tank"):
+        playerData[PlayerID]["queue"] = "none"
+        playerData[PlayerID]["team"] = -1
+        if "id" not in playerData[PlayerID].keys():
+            playerData[PlayerID]["id"] = discord_id
+        savePlayerData(playerData)
+        return True
+    except:
+        return False
+
+
+def setTank(sr, PlayerID, discord_id):
+    """ Updates the player's support SR.
+    """
+    if PlayerID not in playerData:
+        playerData[PlayerID] = {}
+    sr = int(sr)
+    if sr < 1000 or sr > 5000:
+        return False
+    try:
         playerData[PlayerID]["tank"] = sr
-    playerData[PlayerID]["queue"] = "none"
-    playerData[PlayerID]["team"] = -1
-    if "id" not in playerData[PlayerID].keys():
-        playerData[PlayerID]["id"] = discord_id
-    # print(playerData)
-    savePlayerData(playerData)
-    return True
+        playerData[PlayerID]["queue"] = "none"
+        playerData[PlayerID]["team"] = -1
+        if "id" not in playerData[PlayerID].keys():
+            playerData[PlayerID]["id"] = discord_id
+        savePlayerData(playerData)
+        return True
+    except:
+        return False
 
 
 def clearPlayerData():
@@ -236,10 +326,18 @@ def printQueue():
     ''' Returns a formatted string with all the users in queue.
     '''
     pData = getAllPlayerData()
+    suppQ = ""
+    dpsQ = ""
+    tankQ = ""
     queue = ""
     for player in pData.keys():
-        if pData[player]["queue"] != "none":
-            queue = queue + player[:-5] + ": " + pData[player]["queue"] + "\n"
+        if pData[player]["queue"] == "tank":
+            tankQ = tankQ + player[:-5] + ": " + pData[player]["queue"] + "\n"
+        if pData[player]["queue"] == "dps":
+            dpsQ = dpsQ + player[:-5] + ": " + pData[player]["queue"] + "\n"
+        if pData[player]["queue"] == "support":
+            suppQ = suppQ + player[:-5] + ": " + pData[player]["queue"] + "\n"
+    queue = suppQ + dpsQ + tankQ
     if queue == "":
         queue = "Nobody is in queue."
     return queue
@@ -252,56 +350,50 @@ def getAllPlayerData():
     pData = loadPlayerData()
     return pData
 
+key_queue = "queue"
 
-def getTeam1(mmData):
-    ''' Gets team 1.
+
+def getTeam(mmData, teamNum):
+    ''' Gets teams.
     '''
-    team1 = {}
+    team = {}
+    tanks = {}
+    dps = {}
+    numSupp = 0
+    numDPS = 0
     for player in mmData.keys():
-        if mmData[player]["team"] == 1:
-            team1[player] = mmData[player]["queue"]
-    return team1
-
-
-def getTeam2(mmData):
-    ''' Gets team 2.
-    '''
-    team2 = {}
-    for player in mmData.keys():
-        if mmData[player]["team"] == 2:
-            team2[player] = mmData[player]["queue"]
-    return team2
+        if mmData[player]["team"] == teamNum:
+            if mmData[player]["queue"] == "tank":
+                tanks[player] = mmData[player]["queue"]
+            elif mmData[player]["queue"] == "dps":
+                dps[player] = mmData[player]["queue"]
+            else:
+                team[player] = mmData[player]["queue"]
+    team.update(dps)
+    team.update(tanks)
+    return team
 
 
 def printTeams(mmList):
     ''' Returns a formatted string containing all players for both teams.
     '''
     mmData = mmList[0]
-    team1 = getTeam1(mmData)
-    team2 = getTeam2(mmData)
-    teamA = "```Team 1: Avg = " + str(mmList[1]) + "\n"
+    team1 = getTeam(mmData, 1)
+    team2 = getTeam(mmData, 2)
+    teamA = "Team 1: Avg = " + str(mmList[1]) + "\n"
     teamB = "Team 2: Avg = " + str(mmList[2]) + "\n"
+    
     for player in team1.keys():
-        teamA = teamA + player
-        if mmData[player]["queue"] == "support":
-            teamA = teamA + (" " * (32-len(player))) + mmData[player]["queue"]
-        elif mmData[player]["queue"] == "dps":
-            teamA = teamA + (" " * (32-len(player)))+ mmData[player]["queue"]
-        else:
-            teamA = teamA + (" " * (32-len(player)))+ mmData[player]["queue"]
-
-        teamA = teamA + "\n"
+        teamA = teamA + player + \
+                (" " * (32-len(player))) + mmData[player]["queue"] + \
+                "\n"
+        
     for player in team2.keys():
-        teamB = teamB + player
-        if mmData[player]["queue"] == "support":
-            teamB = teamB + (" " * (32-len(player))) + mmData[player]["queue"]
-        elif mmData[player]["queue"] == "dps":
-            teamB = teamB + (" " * (32-len(player))) + mmData[player]["queue"]
-        else:
-            teamB = teamB + (" " * (32-len(player)))+ mmData[player]["queue"]
-
-        teamB = teamB + "\n"
-    message = "\n" + (teamA) + "\n" + (teamB) + "```"
+        teamB = teamB + player + \
+                (" " * (32-len(player))) + mmData[player]["queue"] + \
+                "\n"
+        
+    message = "```\n" + (teamA) + "\n" + (teamB) + "```"
     return message
 
 
