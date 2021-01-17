@@ -56,7 +56,7 @@ Example:
 
 	- shortcut for .matchmake
 
-.win 1
+.win 0/1/2
 
 	- reports the winning team for the bot to change SR values. use 0 for a tie, 1 for team 1, 2 for team 2
 
