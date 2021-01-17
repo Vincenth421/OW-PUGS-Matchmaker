@@ -21,9 +21,9 @@ Daniel Tong
 
 # How to Use
 To use any of the following commands, use type a period "." and then the command, if there are additional arguments, add a space and then the appropriate values.
-Example: (without quotes)
+Example:
 	
-	".support 2500"
+	.support 2500
 
 # Commands:
 
