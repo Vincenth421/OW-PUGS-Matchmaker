@@ -33,7 +33,8 @@ Example:
 
 .update
 
-	- if a user has their battletag set, it will try to grab their SR from Overwatch. must have public profile and be placed in the most current season
+	- if a user has their battletag set, it will try to grab their SR from Overwatch. 
+	- must have public profile and be placed in the most current season
 
 .team
 
