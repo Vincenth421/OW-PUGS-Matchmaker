@@ -20,6 +20,8 @@ Vincent Hwang
 Daniel Tong
 
 # How to Use
+You need to set up a Discord bot account for your server to use the bot. You can follow [this guide](https://www.freecodecamp.org/news/create-a-discord-bot-with-python/) by freeCodeCamp to do so. Clone/download the repository to get the code.   
+
 To use any of the following commands, use type a period "." and then the command, if there are additional arguments, add a space and then the appropriate values.
 Example:
 	
