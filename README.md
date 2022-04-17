@@ -1,23 +1,9 @@
 # OW-PUGS-Matchmaker
-
-
-
 Basic Discord bot that creates balanced teams for Overwatch PUGS.
 
+# Requirements
+Requires Python 3 and Numpy
 
-
-# Main Contributors
-Cameron Holland
-
-Timothy Wang
-
-# Helped By
-
-Michael Gloner
-
-Vincent Hwang
-
-Daniel Tong
 
 # How to Use
 You need to set up a Discord bot account for your server to use the bot. You can follow [this guide](https://www.freecodecamp.org/news/create-a-discord-bot-with-python/) by freeCodeCamp to do so. Clone/download the repository to get the code.   
@@ -106,3 +92,17 @@ Example:
 .coin
 
 	- returns heads or tails at random
+
+
+# Main Contributors
+Cameron Holland
+
+Timothy Wang
+
+# Helped By
+
+Michael Gloner
+
+Vincent Hwang
+
+Daniel Tong
