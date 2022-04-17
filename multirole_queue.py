@@ -42,14 +42,17 @@ def matchmake(playerData):
             queued[names] = playerData[names]
     if queued < 12:
         #TODO: return error
+        pass
     if queued > 12:
         #TODO: don't worry for now, it's gonna be hard to implement, might be impossible tbh
+        pass
     
     #TODO: prolly need to store result in var, not sure what result is
     finished = singlerole(queued, 0, 0, 0, {})
 
     if len(finished[1]) == 12:
         #put them into teams
+        pass
 
     #TODO: actual multirole part
     head = Node("")
@@ -143,7 +146,7 @@ def singlerole(queued, tank, dps, supp, filled):
 
 #TODO: might need to return head pointer instead of nothing, not sure
 def splitRoles(queued, keys, tree):
-    if len(keys) == 0
+    if len(keys) == 0:
         return
     key = keys[0]
     roles = queued[key]["queue"]
